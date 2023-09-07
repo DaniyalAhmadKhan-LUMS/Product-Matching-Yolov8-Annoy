@@ -1,0 +1,13 @@
+# ninja log v5
+1	653	1694042563048228241	CMakeFiles/yolov8ncnn.dir/ndkcamera.cpp.o	3306cad746416e83
+1	1000	1694042563392226211	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	1f14dfe26e14f532
+1	1201	1694042563592225028	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	de2011f652ebdb49
+1201	1735	1694042564132221841	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/app/build/intermediates/cxx/Debug/4c5z4o56/obj/arm64-v8a/libyolov8ncnn.so	b0c4c6ec7bc9e671
+1	23	0	clean	e93fc685ef2d5dd3
+2	682	1694105406373696082	CMakeFiles/yolov8ncnn.dir/ndkcamera.cpp.o	3306cad746416e83
+2	1014	1694105406701693130	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	1f14dfe26e14f532
+2	1182	1694105406865691654	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	de2011f652ebdb49
+1182	1936	1694105407629684786	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/app/build/intermediates/cxx/Debug/4c5z4o56/obj/arm64-v8a/libyolov8ncnn.so	b0c4c6ec7bc9e671
+1	1173	1694105852954714213	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	de2011f652ebdb49
+1173	1672	1694105853458711726	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/app/build/intermediates/cxx/Debug/4c5z4o56/obj/arm64-v8a/libyolov8ncnn.so	b0c4c6ec7bc9e671
+1	27	0	clean	e93fc685ef2d5dd3

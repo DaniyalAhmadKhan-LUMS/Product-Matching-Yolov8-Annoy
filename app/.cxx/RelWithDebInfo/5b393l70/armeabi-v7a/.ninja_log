@@ -1,0 +1,6 @@
+# ninja log v5
+0	712	1694106060065799174	CMakeFiles/yolov8ncnn.dir/ndkcamera.cpp.o	bc1d2034ffd1a5bb
+0	1263	1694106060613797002	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	c8450c13daaae227
+0	1767	1694106061117795004	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	dd28bdd2ab667a29
+1767	2018	1694106061353794070	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/app/build/intermediates/cxx/RelWithDebInfo/5b393l70/obj/armeabi-v7a/libyolov8ncnn.so	342198974276979f
+1	28	0	clean	e93fc685ef2d5dd3
