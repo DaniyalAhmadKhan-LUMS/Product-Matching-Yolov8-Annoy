@@ -77,7 +77,7 @@ private:
 
     const int n_trees = 10;
     const int di = 512;
-    Annoy::AnnoyIndex<int, float, Annoy::Euclidean, Annoy::Kiss32Random, Annoy::AnnoyIndexSingleThreadedBuildPolicy> index;
+    Annoy::AnnoyIndex<int, float, Annoy::Angular, Annoy::Kiss32Random, Annoy::AnnoyIndexSingleThreadedBuildPolicy> index;
     ncnn::Net yolo;
     int target_size;
     float mean_vals[3];

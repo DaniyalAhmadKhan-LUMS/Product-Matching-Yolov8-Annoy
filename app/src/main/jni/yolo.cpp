@@ -526,7 +526,8 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
         std::vector<float> feature_vec = convert_to_vector(outS);
 //        int index = findMostSimilar(feature_vec, featureVectors);
         std::vector<int> closest_items;
-        index.get_nns_by_vector(&feature_vec[0], 1, -1, &closest_items, nullptr);
+        std::vector<float> distance_items;
+        index.get_nns_by_vector(&feature_vec[0], 10, -1, &closest_items, &distance_items);
 
         const unsigned char* color = colors[color_index % 19];
         color_index++;

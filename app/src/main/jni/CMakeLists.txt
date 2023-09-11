@@ -2,7 +2,7 @@ project(yolov8ncnn)
 
 cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_SOURCE_DIR /home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/app/src/main/jni)
+set(CMAKE_SOURCE_DIR /home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/src/main/jni)
 
 # Paths for the Annoy library and headers based on the provided directory structure
 set(ANNOY_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/annoy/src)
