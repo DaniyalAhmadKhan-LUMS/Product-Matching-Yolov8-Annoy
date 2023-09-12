@@ -1,7 +1,0 @@
-Executable : ninja
-arguments : 
--C
-/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/app/.cxx/RelWithDebInfo/5b393l70/armeabi-v7a
-yolov8ncnn
-jvmArgs : 
-

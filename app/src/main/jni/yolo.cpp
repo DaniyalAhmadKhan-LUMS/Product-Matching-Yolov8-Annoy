@@ -26,8 +26,6 @@
 #include "cpu.h"
 #include <dirent.h>
 #include <utility>
-#include "annoylib.h"
-#include "kissrandom.h"
 
 static float fast_exp(float x)
 {
@@ -228,7 +226,7 @@ static void generate_proposals(std::vector<GridAndStride> grid_strides, const nc
     }
 }
 
-Yolo::Yolo() : index(di)
+Yolo::Yolo()
 {
     blob_pool_allocator.set_size_compare_ratio(0.f);
     workspace_pool_allocator.set_size_compare_ratio(0.f);
@@ -288,84 +286,17 @@ int Yolo::loadMFnet(AAssetManager* mgr, const char* modeltype, int _target_size,
     MFnet.load_param(mgr, parampath);
     MFnet.load_model(mgr, modelpath);
 
-    // AAsset* asset = AAssetManager_open(mgr, "feature_db.txt", AASSET_MODE_BUFFER);
-    // int len = AAsset_getLength(asset);
-
-    // std::string words_buffer;
-    // words_buffer.resize(len);
-    // int ret = AAsset_read(asset, (void*)words_buffer.data(), len);
-    // AAsset_close(asset);
-    // std::string delimiter = "\n";
-    // std::pair<std::vector<std::vector<float>>, std::vector<std::string>> result = load_feature_db_txt(words_buffer,delimiter);
-    // featureVectors = result.first;
-    // labels = result.second;
-
-    // for (int i = 0; i < featureVectors.size(); i++) {
-    //     index.add_item(i, &featureVectors[i][0]);
-    // }
-    // index.build(n_trees);
-    AAsset* asset = AAssetManager_open(mgr, "class_names.txt", AASSET_MODE_BUFFER);
+    AAsset* asset = AAssetManager_open(mgr, "feature_db.txt", AASSET_MODE_BUFFER);
     int len = AAsset_getLength(asset);
-    char* buffer = new char[len + 1];
-    AAsset_read(asset, buffer, len);
-    buffer[len] = '\0';
+
+    std::string words_buffer;
+    words_buffer.resize(len);
+    int ret = AAsset_read(asset, (void*)words_buffer.data(), len);
     AAsset_close(asset);
-    std::string content(buffer);
-    delete[] buffer;
-    std::stringstream ss(content);
-    std::string line;
-    while (std::getline(ss, line)) {
-        labels.push_back(line);
-    }
-
-    std::string errorMessage = "";
-
-const char* internal_path = "/data/data/com.tencent.yolov8ncnn/files/annoy_index.ann";
-
-// Ensure directory exists
-std::string dir_path = "/data/data/com.tencent.yolov8ncnn/files/";
-struct stat st;
-if(stat(dir_path.c_str(), &st) == -1) {
-    mkdir(dir_path.c_str(), 0700); // Make directory with read/write/search permissions for owner
-}
-
-AAsset* asset_annoy = AAssetManager_open(mgr, "annoy_index.ann", AASSET_MODE_UNKNOWN);
-if (asset_annoy) {
-    int size = AAsset_getLength(asset_annoy);
-    char* buffer_annoy = new char[size];
-    AAsset_read(asset_annoy, buffer_annoy, size);
-    AAsset_close(asset_annoy);
-
-    std::ofstream outfile(internal_path, std::ios::binary | std::ios::trunc);
-    if (outfile.is_open()) {
-        outfile.write(buffer_annoy, size);
-        outfile.flush();
-        outfile.close();
-
-        if (!outfile) {
-            errorMessage = "Writing to file failed";
-        }
-    } else {
-        errorMessage = "Opening outfile for writing failed";
-    }
-
-    delete[] buffer_annoy;
-
-} else {
-    errorMessage = "Opening asset failed";
-}
-
-bool loadSuccess = index.load(internal_path);
-if (!loadSuccess) {
-    errorMessage = "Loading the Annoy index failed";
-}
-
-if (errorMessage != "") {
-    std::cerr << errorMessage << std::endl;
-    // Handle the error as required, perhaps you might want to pop up a message to the user, etc.
-}
-
-
+    std::string delimiter = "\n";
+    std::pair<std::vector<std::vector<float>>, std::vector<std::string>> result = load_feature_db_txt(words_buffer,delimiter);
+    featureVectors = result.first;
+    labels = result.second;
 
     return 0;
 }
@@ -524,10 +455,8 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
         ncnn::Mat outS;
         exS.extract("output", outS);
         std::vector<float> feature_vec = convert_to_vector(outS);
-//        int index = findMostSimilar(feature_vec, featureVectors);
-        std::vector<int> closest_items;
-        std::vector<float> distance_items;
-        index.get_nns_by_vector(&feature_vec[0], 10, -1, &closest_items, &distance_items);
+        int index = findMostSimilar(feature_vec, featureVectors);
+
 
         const unsigned char* color = colors[color_index % 19];
         color_index++;
@@ -539,7 +468,7 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 
 
         int baseLine = 0;
-        cv::Size label_size = cv::getTextSize(labels[closest_items[0]], cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+        cv::Size label_size = cv::getTextSize(labels[index], cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
 
         int x = obj.rect.x;
         int y = obj.rect.y - label_size.height - baseLine;
@@ -552,7 +481,7 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 
         cv::Scalar textcc = (color[0] + color[1] + color[2] >= 381) ? cv::Scalar(0, 0, 0) : cv::Scalar(255, 255, 255);
 
-        cv::putText(rgb, labels[closest_items[0]], cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+        cv::putText(rgb, labels[index], cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
     }
 
     return 0;

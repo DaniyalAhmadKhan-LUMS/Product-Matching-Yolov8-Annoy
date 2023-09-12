@@ -1,7 +1,0 @@
-Executable : ninja
-arguments : 
--C
-/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/5oz565k2/x86_64
-yolov8ncnn
-jvmArgs : 
-
