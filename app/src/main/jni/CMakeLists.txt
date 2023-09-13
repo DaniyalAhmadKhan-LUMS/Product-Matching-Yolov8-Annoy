@@ -3,6 +3,10 @@ project(yolov8ncnn)
 cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_SOURCE_DIR /home/daniyal/Documents/Upwork/Jared/NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni)
+
+# Include Eigen
+include_directories(${CMAKE_SOURCE_DIR}/eigen)
+
 set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.5.1-android/sdk/native/jni)
 find_package(OpenCV REQUIRED core imgproc)
 

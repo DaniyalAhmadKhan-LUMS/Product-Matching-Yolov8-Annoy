@@ -26,6 +26,7 @@
 #include "cpu.h"
 #include <dirent.h>
 #include <utility>
+#include <Eigen/Dense>
 
 static float fast_exp(float x)
 {
@@ -297,7 +298,12 @@ int Yolo::loadMFnet(AAssetManager* mgr, const char* modeltype, int _target_size,
     std::pair<std::vector<std::vector<float>>, std::vector<std::string>> result = load_feature_db_txt(words_buffer,delimiter);
     featureVectors = result.first;
     labels = result.second;
+    matB.resize(featureVectors.size(), featureVectors[0].size());
 
+    for (size_t i = 0; i < featureVectors.size(); ++i) {
+        matB.row(i) = Eigen::Map<const Eigen::VectorXf>(featureVectors[i].data(), featureVectors[i].size());
+    }
+    B_normalized = matB.rowwise().normalized();
     return 0;
 }
 
@@ -444,18 +450,27 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
         cv::Mat croppedImage = rgb(obj.rect);
        cv::Mat resizedImage;
        cv::resize(croppedImage, resizedImage, cv::Size(224, 224));
+        cv::Mat floatImage;
+        resizedImage.convertTo(floatImage, CV_32F, 1.0 / 255.0); // Normalize to [0, 1]
 
+        // Normalize to [-1, 1]
+        cv::Scalar mean(0.5, 0.5, 0.5);
+        cv::Scalar std(0.5, 0.5, 0.5);
+        for (int i = 0; i < floatImage.channels(); ++i) {
+            floatImage -= mean[i] * 255.0;
+            floatImage /= std[i] * 255.0;
+        }
 //         fprintf(stderr, "%d = %.5f at %.2f %.2f %.2f x %.2f\n", obj.label, obj.prob,
 //                 obj.rect.x, obj.rect.y, obj.rect.width, obj.rect.height);
-        ncnn::Mat inBlob = ncnn::Mat::from_pixels(resizedImage.data, ncnn::Mat::PIXEL_BGR, 224, 224);
-        const float mean_valsXS[3] = {104.f, 117.f, 123.f};
-        inBlob.substract_mean_normalize(mean_valsXS, 0);
+        ncnn::Mat inBlob = ncnn::Mat::from_pixels(floatImage.data, ncnn::Mat::PIXEL_BGR, 224, 224);
+//        const float mean_valsXS[3] = {104.f, 117.f, 123.f};
+//        inBlob.substract_mean_normalize(mean_valsXS, 0);
         ncnn::Extractor exS = MFnet.create_extractor();
         exS.input("input", inBlob);
         ncnn::Mat outS;
         exS.extract("output", outS);
         std::vector<float> feature_vec = convert_to_vector(outS);
-        int index = findMostSimilar(feature_vec, featureVectors);
+        int index = findMostSimilar(feature_vec);
 
 
         const unsigned char* color = colors[color_index % 19];

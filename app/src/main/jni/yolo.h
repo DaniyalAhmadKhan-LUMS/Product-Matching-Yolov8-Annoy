@@ -24,6 +24,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <Eigen/Dense>
 
 struct Object
 {
@@ -100,39 +101,22 @@ std::vector<float> convert_to_vector(const ncnn::Mat& mat) {
 
     return vec;
 }
-float dotProduct(const std::vector<float>& A, const std::vector<float>& B) {
-    float sum = 0;
-    for (size_t i = 0; i < A.size(); ++i) {
-        sum += A[i] * B[i];
-    }
-    return sum;
-}
 
-// Function to calculate magnitude (Euclidean norm) of a vector
-float magnitude(const std::vector<float>& A) {
-    return std::sqrt(dotProduct(A, A));
-}
+    int findMostSimilar(const std::vector<float>& V1) {
+        Eigen::VectorXf similarities = batchCosineSimilarity(V1);
 
-// Function to calculate cosine similarity between two vectors
-float cosineSimilarity(const std::vector<float>& A, const std::vector<float>& B) {
-    return dotProduct(A, B) / (magnitude(A) * magnitude(B));
-}
+        Eigen::Index maxIndex;
+        similarities.maxCoeff(&maxIndex);
 
-// Function to find the index of the most similar vector in V2 to V1
-int findMostSimilar(const std::vector<float>& V1, const std::vector<std::vector<float>>& V2) {
-    int mostSimilarIndex = -1;
-    float highestSimilarity = -1.0;  // Initialize to -1 as cosine similarity ranges from -1 to 1
-
-    for (size_t i = 0; i < V2.size(); ++i) {
-        float similarity = cosineSimilarity(V1, V2[i]);
-        if (similarity > highestSimilarity) {
-            highestSimilarity = similarity;
-            mostSimilarIndex = i;
-        }
+        return static_cast<int>(maxIndex);
     }
 
-    return mostSimilarIndex;
-}
+    Eigen::VectorXf batchCosineSimilarity(const std::vector<float>& A) {
+
+        Eigen::VectorXf vecA = Eigen::VectorXf::Map(A.data(), A.size());
+        vecA.normalize();
+        return B_normalized * vecA;
+    }
 private:
     ncnn::Net yolo;
     int target_size;
@@ -142,6 +126,8 @@ private:
     ncnn::PoolAllocator workspace_pool_allocator;
     std::vector<std::vector<float>> featureVectors;
     std::vector<std::string> labels;
+    Eigen::MatrixXf matB;
+    Eigen::MatrixXf B_normalized;
     // SqueezNet INT
     ncnn::UnlockedPoolAllocator g_blob_pool_allocator;
     ncnn::PoolAllocator g_workspace_pool_allocator;
