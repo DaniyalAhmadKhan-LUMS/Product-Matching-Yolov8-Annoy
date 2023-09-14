@@ -448,23 +448,13 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
     {
         const Object& obj = objects[i];
         cv::Mat croppedImage = rgb(obj.rect);
-       cv::Mat resizedImage;
-       cv::resize(croppedImage, resizedImage, cv::Size(224, 224));
-        cv::Mat floatImage;
-        resizedImage.convertTo(floatImage, CV_32F, 1.0 / 255.0); // Normalize to [0, 1]
 
-        // Normalize to [-1, 1]
-        cv::Scalar mean(0.5, 0.5, 0.5);
-        cv::Scalar std(0.5, 0.5, 0.5);
-        for (int i = 0; i < floatImage.channels(); ++i) {
-            floatImage -= mean[i] * 255.0;
-            floatImage /= std[i] * 255.0;
-        }
-//         fprintf(stderr, "%d = %.5f at %.2f %.2f %.2f x %.2f\n", obj.label, obj.prob,
-//                 obj.rect.x, obj.rect.y, obj.rect.width, obj.rect.height);
-        ncnn::Mat inBlob = ncnn::Mat::from_pixels(floatImage.data, ncnn::Mat::PIXEL_BGR, 224, 224);
+        ncnn::Mat inBlob = ncnn::Mat::from_pixels_resize(croppedImage.data, ncnn::Mat::PIXEL_BGR, croppedImage.cols, croppedImage.rows, 224, 224);
 //        const float mean_valsXS[3] = {104.f, 117.f, 123.f};
 //        inBlob.substract_mean_normalize(mean_valsXS, 0);
+        const float mean_vals[3] = {127.5f, 127.5f, 127.5f};
+        const float norm_vals[3] = {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5};
+        inBlob.substract_mean_normalize(mean_vals, norm_vals);
         ncnn::Extractor exS = MFnet.create_extractor();
         exS.input("input", inBlob);
         ncnn::Mat outS;
