@@ -472,10 +472,17 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 
 
 
+
         int baseLine = 0;
-        cv::Size label_size = cv::getTextSize(labels[index], cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+        cv::Size label_size;
 
         int x = obj.rect.x;
+        if (index == -1){
+            label_size = cv::getTextSize("unknown", cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+        }
+        else{
+            label_size = cv::getTextSize(labels[index], cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+        }
         int y = obj.rect.y - label_size.height - baseLine;
         if (y < 0)
             y = 0;
@@ -485,8 +492,12 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
         cv::rectangle(rgb, cv::Rect(cv::Point(x, y), cv::Size(label_size.width, label_size.height + baseLine)), cc, -1);
 
         cv::Scalar textcc = (color[0] + color[1] + color[2] >= 381) ? cv::Scalar(0, 0, 0) : cv::Scalar(255, 255, 255);
-
-        cv::putText(rgb, labels[index], cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+        if (index == -1){
+            cv::putText(rgb, "unkown", cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+        }
+        else{
+            cv::putText(rgb, labels[index], cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+        }
     }
 
     return 0;

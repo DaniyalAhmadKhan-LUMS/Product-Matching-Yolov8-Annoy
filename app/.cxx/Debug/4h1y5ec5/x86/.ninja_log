@@ -69,3 +69,8 @@
 2	1247	1694636328607810636	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	359d0f55765602c4
 2	1709	1694636329063811329	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	4c1ad32d83a005cf
 1709	1919	1694636329247811606	/home/daniyal/Documents/Upwork/Jared/NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/build/intermediates/cxx/Debug/4h1y5ec5/obj/x86/libyolov8ncnn.so	59bba3ee86d9c057
+4	388	1694716563731546685	/home/daniyal/Documents/Upwork/Jared/NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/build/intermediates/cxx/Debug/4h1y5ec5/obj/x86/libyolov8ncnn.so	59bba3ee86d9c057
+2	1239	1694721011412431093	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	359d0f55765602c4
+2	1694	1694721011864427150	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	4c1ad32d83a005cf
+1694	1905	1694721012048425546	/home/daniyal/Documents/Upwork/Jared/NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/build/intermediates/cxx/Debug/4h1y5ec5/obj/x86/libyolov8ncnn.so	59bba3ee86d9c057
+0	25	0	clean	e93fc685ef2d5dd3

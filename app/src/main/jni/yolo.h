@@ -106,8 +106,10 @@ std::vector<float> convert_to_vector(const ncnn::Mat& mat) {
         Eigen::VectorXf similarities = batchCosineSimilarity(V1);
 
         Eigen::Index maxIndex;
-        similarities.maxCoeff(&maxIndex);
-
+        float maxSimilarity = similarities.maxCoeff(&maxIndex);
+        if (maxSimilarity < 0.34) {
+            return -1;
+        }
         return static_cast<int>(maxIndex);
     }
 
