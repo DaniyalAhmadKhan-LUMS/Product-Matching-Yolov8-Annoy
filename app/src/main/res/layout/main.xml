@@ -31,6 +31,17 @@
         android:layout_height="wrap_content"
         android:drawSelectorOnTop="true"
         android:entries="@array/cpugpu_array" />
+    <Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:onClick="resumeCamera"
+    android:text="Resume Camera"/>
+    <Button
+    android:id="@+id/btn_gallery"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Open Gallery"
+    android:onClick="openGallery"/>
 
     </LinearLayout>
 
@@ -38,5 +49,10 @@
         android:id="@+id/cameraview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+    <ImageView
+    android:id="@+id/myImageView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:visibility="gone" />
 
 </LinearLayout>

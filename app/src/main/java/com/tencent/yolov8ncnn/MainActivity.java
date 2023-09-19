@@ -1,32 +1,24 @@
-// Tencent is pleased to support the open source community by making ncnn available.
-//
-// Copyright (C) 2021 THL A29 Limited, a Tencent company. All rights reserved.
-//
-// Licensed under the BSD 3-Clause License (the "License"); you may not use this file except
-// in compliance with the License. You may obtain a copy of the License at
-//
-// https://opensource.org/licenses/BSD-3-Clause
-//
-// Unless required by applicable law or agreed to in writing, software distributed
-// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-// CONDITIONS OF ANY KIND, either express or implied. See the License for the
-// specific language governing permissions and limitations under the License.
-
 package com.tencent.yolov8ncnn;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.widget.ImageView;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.Spinner;
 
 import android.support.v4.app.ActivityCompat;
@@ -35,9 +27,11 @@ import android.support.v4.content.ContextCompat;
 public class MainActivity extends Activity implements SurfaceHolder.Callback
 {
     public static final int REQUEST_CAMERA = 100;
-
+    private static final int REQUEST_SELECT_IMAGE = 1001;
+    public static final int REQUEST_STORAGE = 101;
     private Yolov8Ncnn yolov8ncnn = new Yolov8Ncnn();
     private int facing = 0;
+    private boolean isGallery = false;
 
     private Spinner spinnerModel;
     private Spinner spinnerCPUGPU;
@@ -45,6 +39,11 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private int current_cpugpu = 0;
 
     private SurfaceView cameraView;
+    private ImageView imageView;
+    private Bitmap yourselectedImage = null;
+
+    
+
 
     /** Called when the activity is first created. */
     @Override
@@ -61,23 +60,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         cameraView.getHolder().addCallback(this);
 
 
-//        spinnerModel = (Spinner) findViewById(R.id.spinnerModel);
-//        spinnerModel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id)
-//            {
-//                if (position != current_model)
-//                {
-//                    current_model = position;
-//                    reload();
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> arg0)
-//            {
-//            }
-//        });
 
         spinnerCPUGPU = (Spinner) findViewById(R.id.spinnerCPUGPU);
         spinnerCPUGPU.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -99,6 +81,70 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
         reload();
     }
+
+    public void resumeCamera(View view) {
+        // Restart the camera
+        yolov8ncnn.openCamera(1);
+        
+        // Toggle view visibility
+        imageView = (ImageView) findViewById(R.id.myImageView);
+        imageView.setVisibility(View.GONE);
+        cameraView.setVisibility(View.VISIBLE);
+
+    }
+
+    public void openGallery(View view) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_STORAGE);
+        } else {
+            onImageSelectButtonClick(view);
+        }
+    }
+
+    public void onImageSelectButtonClick(View view) {
+        yolov8ncnn.closeCamera(); // close camera first
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQUEST_SELECT_IMAGE);
+        cameraView.setVisibility(View.GONE); // hide camera view
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SELECT_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            try {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImageUri), null, options);
+                yolov8ncnn.detectImage(bitmap);
+
+                imageView = (ImageView) findViewById(R.id.myImageView);
+                
+                imageView.setImageBitmap(bitmap);
+
+                imageView.setVisibility(View.VISIBLE); // show image view
+
+            } catch (IOException e) {
+                Log.e("MainActivity", "Error processing selected image", e);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onImageSelectButtonClick(null);
+            }
+        }
+    }
+
+
+
+
+
 
     private void reload()
     {
@@ -145,4 +191,5 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
         yolov8ncnn.closeCamera();
     }
+
 }
