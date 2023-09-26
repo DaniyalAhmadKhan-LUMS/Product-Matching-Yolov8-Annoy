@@ -22,11 +22,16 @@
 #include "benchmark.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+// #include <opencv2/highgui/highgui.hpp>
 #include <android/bitmap.h>
 #include "cpu.h"
 #include <dirent.h>
 #include <utility>
 #include <Eigen/Dense>
+#include "tracker.h"
+#include "utils.h"
+#include <map>
+#include <random>
 
 static float fast_exp(float x)
 {
@@ -387,6 +392,7 @@ int Yolo::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_th
         objects[i].rect.y = y0;
         objects[i].rect.width = x1 - x0;
         objects[i].rect.height = y1 - y0;
+        bbox_per_frame.push_back(objects[i].rect);
     }
 
     // sort objects by area
@@ -408,6 +414,13 @@ int Yolo::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_th
 
 int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 {
+    frame_index++;
+    if (!idInfoMap.empty()) {
+        auto firstEntry = idInfoMap.begin();
+        if (frame_index - firstEntry->second.lastSeenFrame > frameThreshold) {
+            idInfoMap.erase(firstEntry);
+        }
+    }
     static const char* class_names[] = {
         "product", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
         "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
@@ -441,64 +454,82 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
         {158, 158, 158},
         {139, 125,  96}
     };
-
+    
     int color_index = 0;
+    tracker.Run(bbox_per_frame);
+    const auto tracks = tracker.GetTracks();
+     for (auto &trk : tracks) {
+        // only draw tracks which meet certain criteria
+        if (trk.second.coast_cycles_ < kMaxCoastCycles && trk.second.hit_streak_ >= kMinHits){
 
-    for (size_t i = 0; i < objects.size(); i++)
-    {
-        const Object& obj = objects[i];
-        cv::Mat croppedImage = rgb(obj.rect);
+            const auto &obj = trk.second.GetStateAsBbox();
+            int index;
+            cv::Rect imgRect(0, 0, rgb.cols, rgb.rows);
+            if (imgRect.contains(obj.tl()) && imgRect.contains(obj.br())) {
+                cv::Mat croppedImage = rgb(obj);
+            if (idInfoMap.find(trk.first) == idInfoMap.end()) {
 
-        ncnn::Mat inBlob = ncnn::Mat::from_pixels_resize(croppedImage.data, ncnn::Mat::PIXEL_BGR, croppedImage.cols, croppedImage.rows, 224, 224);
-//        const float mean_valsXS[3] = {104.f, 117.f, 123.f};
-//        inBlob.substract_mean_normalize(mean_valsXS, 0);
-        const float mean_vals[3] = {127.5f, 127.5f, 127.5f};
-        const float norm_vals[3] = {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5};
-        inBlob.substract_mean_normalize(mean_vals, norm_vals);
-        ncnn::Extractor exS = MFnet.create_extractor();
-        exS.input("input", inBlob);
-        ncnn::Mat outS;
-        exS.extract("output", outS);
-        std::vector<float> feature_vec = convert_to_vector(outS);
-        int index = findMostSimilar(feature_vec);
+            ncnn::Mat inBlob = ncnn::Mat::from_pixels_resize(croppedImage.data, ncnn::Mat::PIXEL_BGR, croppedImage.cols, croppedImage.rows, 224, 224);
+    //        const float mean_valsXS[3] = {104.f, 117.f, 123.f};
+    //        inBlob.substract_mean_normalize(mean_valsXS, 0);
+            const float mean_vals[3] = {127.5f, 127.5f, 127.5f};
+            const float norm_vals[3] = {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5};
+            inBlob.substract_mean_normalize(mean_vals, norm_vals);
+            ncnn::Extractor exS = MFnet.create_extractor();
+            exS.input("input", inBlob);
+            ncnn::Mat outS;
+            exS.extract("output", outS);
+            std::vector<float> feature_vec = convert_to_vector(outS);
+            index = findMostSimilar(feature_vec);
+
+            idInfoMap[trk.first] = {labels[index], frame_index};
+            }
+            else{}
+            }
+            else{
+                index = -1;
+                idInfoMap[trk.first].lastSeenFrame = frame_index;
+            }
+
+            const unsigned char* color = colors[color_index % 19];
+            color_index++;
+
+            cv::Scalar cc(color[0], color[1], color[2]);
 
 
-        const unsigned char* color = colors[color_index % 19];
-        color_index++;
-
-        cv::Scalar cc(color[0], color[1], color[2]);
-
-        cv::rectangle(rgb, obj.rect, cc, 2);
+            cv::rectangle(rgb, obj, cc, 2);
+            
 
 
 
+             int baseLine = 0;
+             cv::Size label_size;
+            std::string labelText = std::to_string(trk.first) + " " +idInfoMap[trk.first].label;
+             int x = 20;
+             if (index == -1){
+                 label_size = cv::getTextSize("unknown", cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+             }
+             else{
+                 label_size = cv::getTextSize(labelText, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+             }
+             int y = obj.tl().y - label_size.height - baseLine;
+             if (y < 0)
+                 y = 0;
+             if (x + label_size.width > rgb.cols)
+                 x = rgb.cols - label_size.width;
+              cv::rectangle(rgb, cv::Rect(cv::Point(x, y), cv::Size(label_size.width, label_size.height + baseLine)), cc, -1);
 
-        int baseLine = 0;
-        cv::Size label_size;
-
-        int x = obj.rect.x;
-        if (index == -1){
-            label_size = cv::getTextSize("unknown", cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
-        }
-        else{
-            label_size = cv::getTextSize(labels[index], cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
-        }
-        int y = obj.rect.y - label_size.height - baseLine;
-        if (y < 0)
-            y = 0;
-        if (x + label_size.width > rgb.cols)
-            x = rgb.cols - label_size.width;
-        cv::rectangle(rgb, cv::Rect(cv::Point(x, y), cv::Size(label_size.width, label_size.height + baseLine)), cc, -1);
-
-        cv::Scalar textcc = (color[0] + color[1] + color[2] >= 381) ? cv::Scalar(0, 0, 0) : cv::Scalar(255, 255, 255);
-        if (index == -1){
-            cv::putText(rgb, "unkown", cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
-        }
-        else{
-            cv::putText(rgb, labels[index], cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
-        }
+             cv::Scalar textcc = (color[0] + color[1] + color[2] >= 381) ? cv::Scalar(0, 0, 0) : cv::Scalar(255, 255, 255);
+             if (index == -1){
+                 cv::putText(rgb, "unknown", cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+             }
+             else{
+                 cv::putText(rgb, labelText, cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+             }
+            }
         
     }
+    bbox_per_frame.clear();
 
     return 0;
 }

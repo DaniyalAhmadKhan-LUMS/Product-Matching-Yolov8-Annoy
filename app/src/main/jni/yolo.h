@@ -25,7 +25,8 @@
 #include <cmath>
 #include <algorithm>
 #include <Eigen/Dense>
-
+#include "tracker.h"
+#include <unordered_map>
 struct Object
 {
     cv::Rect_<float> rect;
@@ -38,6 +39,10 @@ struct GridAndStride
     int grid1;
     int stride;
 };
+struct ObjectInfo {
+    std::string label;
+    int lastSeenFrame;
+};
 class Yolo
 {
 public:
@@ -48,6 +53,7 @@ public:
     int load(AAssetManager* mgr, const char* modeltype, int target_size, const float* mean_vals, const float* norm_vals, bool use_gpu = false);
     int detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_threshold = 0.4f, float nms_threshold = 0.5f);
     int draw(cv::Mat& rgb, const std::vector<Object>& objects);
+
     std::pair<std::vector<std::vector<float>>, std::vector<std::string>> load_feature_db_txt(const std::string& str, const std::string& delimiter)
     {
         std::vector<std::vector<float>> featureVectorsTemp;
@@ -121,6 +127,11 @@ std::vector<float> convert_to_vector(const ncnn::Mat& mat) {
     }
 private:
     ncnn::Net yolo;
+    Tracker tracker;
+    int frame_index = 0;
+    int frameThreshold = 60;
+    std::vector<cv::Rect> bbox_per_frame;
+    std::unordered_map<int, ObjectInfo> idInfoMap;
     int target_size;
     float mean_vals[3];
     float norm_vals[3];
