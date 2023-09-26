@@ -2,8 +2,8 @@ ninja: Entering directory `/home/daniyal/Documents/Upwork/Jared/NCNN-Android-App
 [1/8] Building CXX object CMakeFiles/yolov8ncnn.dir/munkres.cpp.o
 [2/8] Building CXX object CMakeFiles/yolov8ncnn.dir/ndkcamera.cpp.o
 [3/8] Building CXX object CMakeFiles/yolov8ncnn.dir/track.cpp.o
-[4/8] Building CXX object CMakeFiles/yolov8ncnn.dir/tracker.cpp.o
-[5/8] Building CXX object CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o
+[4/8] Building CXX object CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o
+[5/8] Building CXX object CMakeFiles/yolov8ncnn.dir/tracker.cpp.o
 [6/8] Building CXX object CMakeFiles/yolov8ncnn.dir/yolo.cpp.o
 [7/8] Building CXX object CMakeFiles/yolov8ncnn.dir/kalman_filter.cpp.o
 [8/8] Linking CXX shared library /home/daniyal/Documents/Upwork/Jared/NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/build/intermediates/cxx/RelWithDebInfo/8141y634/obj/arm64-v8a/libyolov8ncnn.so

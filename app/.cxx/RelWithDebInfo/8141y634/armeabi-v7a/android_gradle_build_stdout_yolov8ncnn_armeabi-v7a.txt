@@ -6,8 +6,8 @@ ninja: Entering directory `/home/daniyal/Documents/Upwork/Jared/NCNN-Android-App
                                                                                          %lld
 1 warning generated.
 [2/8] Building CXX object CMakeFiles/yolov8ncnn.dir/munkres.cpp.o
-[3/8] Building CXX object CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o
-[4/8] Building CXX object CMakeFiles/yolov8ncnn.dir/track.cpp.o
+[3/8] Building CXX object CMakeFiles/yolov8ncnn.dir/track.cpp.o
+[4/8] Building CXX object CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o
 [5/8] Building CXX object CMakeFiles/yolov8ncnn.dir/tracker.cpp.o
 [6/8] Building CXX object CMakeFiles/yolov8ncnn.dir/yolo.cpp.o
 [7/8] Building CXX object CMakeFiles/yolov8ncnn.dir/kalman_filter.cpp.o

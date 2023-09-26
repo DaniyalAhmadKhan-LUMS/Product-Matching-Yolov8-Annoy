@@ -90,3 +90,13 @@
 3	6155	1695731708766524943	CMakeFiles/yolov8ncnn.dir/kalman_filter.cpp.o	669d672bcf6d3d0d
 6155	6464	1695731709038521759	/home/daniyal/Documents/Upwork/Jared/NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/build/intermediates/cxx/RelWithDebInfo/8141y634/obj/x86_64/libyolov8ncnn.so	c82a7aff5912dbc
 1	94	0	clean	e93fc685ef2d5dd3
+1	23	0	clean	e93fc685ef2d5dd3
+0	28	0	clean	e93fc685ef2d5dd3
+2	733	1695746371379728124	CMakeFiles/yolov8ncnn.dir/ndkcamera.cpp.o	328309136485563d
+2	823	1695746371471727583	CMakeFiles/yolov8ncnn.dir/munkres.cpp.o	7caf5dda38ed647
+2	1407	1695746372051724176	CMakeFiles/yolov8ncnn.dir/track.cpp.o	da892bada79f0276
+1	1548	1695746372187723376	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	6a5f09cb417ca9dd
+2	1658	1695746372303722693	CMakeFiles/yolov8ncnn.dir/tracker.cpp.o	ad0a46fbb5acb13d
+2	2752	1695746373391716297	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	4a47a62ff8f77b6a
+2	6083	1695746376699696845	CMakeFiles/yolov8ncnn.dir/kalman_filter.cpp.o	669d672bcf6d3d0d
+6083	6396	1695746376979695198	/home/daniyal/Documents/Upwork/Jared/NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/build/intermediates/cxx/RelWithDebInfo/8141y634/obj/x86_64/libyolov8ncnn.so	c82a7aff5912dbc
