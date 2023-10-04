@@ -291,7 +291,7 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_detectImage(JN
         {
             std::vector<Object> objects;
             g_yolo->detect(img_bgr, objects);
-            g_yolo->draw(img_bgr, objects);
+            g_yolo->drawGallery(img_bgr, objects);
         }
         else
         {

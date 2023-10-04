@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
   <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../../../../../../NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni/eigen">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../../NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni/eigen" type="native-header-root" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../../../../NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni/opencv-mobile-4.5.1-android/sdk/native/jni/include">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../../NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni/opencv-mobile-4.5.1-android/sdk/native/jni/include" type="native-header-root" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../../../../NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni/ncnn-20220420-android-vulkan/x86/include/ncnn">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../../NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni/ncnn-20220420-android-vulkan/x86/include/ncnn" type="native-header-root" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../../../../NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni/include">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../../NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni/include" type="native-header-root" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../app/src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../app/src/main/jni" type="native-Source-root" />
     </content>

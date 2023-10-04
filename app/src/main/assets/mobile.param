@@ -1,116 +1,116 @@
 7767517
 114 126
-Input            input                    0 1 input
-Convolution      /conv1/conv/Conv         1 1 input /conv1/conv/Conv_output_0 0=64 1=3 11=3 2=1 12=1 3=2 13=2 4=1 14=1 15=1 16=1 5=1 6=1728
-PReLU            /conv1/prelu/PRelu       1 1 /conv1/conv/Conv_output_0 /conv1/prelu/PRelu_output_0 0=64
-ConvolutionDepthWise /dw_conv1/conv/Conv      1 1 /conv1/prelu/PRelu_output_0 /dw_conv1/conv/Conv_output_0 0=64 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=576 7=64
-PReLU            /dw_conv1/prelu/PRelu    1 1 /dw_conv1/conv/Conv_output_0 /dw_conv1/prelu/PRelu_output_0 0=64
-Convolution      /blocks/blocks.0/conv/conv.0/Conv 1 1 /dw_conv1/prelu/PRelu_output_0 /blocks/blocks.0/conv/conv.0/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-PReLU            /blocks/blocks.0/conv/conv.2/PRelu 1 1 /blocks/blocks.0/conv/conv.0/Conv_output_0 /blocks/blocks.0/conv/conv.2/PRelu_output_0 0=128
-ConvolutionDepthWise /blocks/blocks.0/conv/conv.3/Conv 1 1 /blocks/blocks.0/conv/conv.2/PRelu_output_0 /blocks/blocks.0/conv/conv.3/Conv_output_0 0=128 1=3 11=3 2=1 12=1 3=2 13=2 4=1 14=1 15=1 16=1 5=1 6=1152 7=128
-PReLU            /blocks/blocks.0/conv/conv.5/PRelu 1 1 /blocks/blocks.0/conv/conv.3/Conv_output_0 /blocks/blocks.0/conv/conv.5/PRelu_output_0 0=128
-Convolution      /blocks/blocks.0/conv/conv.6/Conv 1 1 /blocks/blocks.0/conv/conv.5/PRelu_output_0 /blocks/blocks.0/conv/conv.6/Conv_output_0 0=64 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-Split            splitncnn_0              1 2 /blocks/blocks.0/conv/conv.6/Conv_output_0 /blocks/blocks.0/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.0/conv/conv.6/Conv_output_0_splitncnn_1
-Convolution      /blocks/blocks.1/conv/conv.0/Conv 1 1 /blocks/blocks.0/conv/conv.6/Conv_output_0_splitncnn_1 /blocks/blocks.1/conv/conv.0/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-PReLU            /blocks/blocks.1/conv/conv.2/PRelu 1 1 /blocks/blocks.1/conv/conv.0/Conv_output_0 /blocks/blocks.1/conv/conv.2/PRelu_output_0 0=128
-ConvolutionDepthWise /blocks/blocks.1/conv/conv.3/Conv 1 1 /blocks/blocks.1/conv/conv.2/PRelu_output_0 /blocks/blocks.1/conv/conv.3/Conv_output_0 0=128 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=1152 7=128
-PReLU            /blocks/blocks.1/conv/conv.5/PRelu 1 1 /blocks/blocks.1/conv/conv.3/Conv_output_0 /blocks/blocks.1/conv/conv.5/PRelu_output_0 0=128
-Convolution      /blocks/blocks.1/conv/conv.6/Conv 1 1 /blocks/blocks.1/conv/conv.5/PRelu_output_0 /blocks/blocks.1/conv/conv.6/Conv_output_0 0=64 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-BinaryOp         /blocks/blocks.1/Add     2 1 /blocks/blocks.0/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.1/conv/conv.6/Conv_output_0 /blocks/blocks.1/Add_output_0 0=0
-Split            splitncnn_1              1 2 /blocks/blocks.1/Add_output_0 /blocks/blocks.1/Add_output_0_splitncnn_0 /blocks/blocks.1/Add_output_0_splitncnn_1
-Convolution      /blocks/blocks.2/conv/conv.0/Conv 1 1 /blocks/blocks.1/Add_output_0_splitncnn_1 /blocks/blocks.2/conv/conv.0/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-PReLU            /blocks/blocks.2/conv/conv.2/PRelu 1 1 /blocks/blocks.2/conv/conv.0/Conv_output_0 /blocks/blocks.2/conv/conv.2/PRelu_output_0 0=128
-ConvolutionDepthWise /blocks/blocks.2/conv/conv.3/Conv 1 1 /blocks/blocks.2/conv/conv.2/PRelu_output_0 /blocks/blocks.2/conv/conv.3/Conv_output_0 0=128 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=1152 7=128
-PReLU            /blocks/blocks.2/conv/conv.5/PRelu 1 1 /blocks/blocks.2/conv/conv.3/Conv_output_0 /blocks/blocks.2/conv/conv.5/PRelu_output_0 0=128
-Convolution      /blocks/blocks.2/conv/conv.6/Conv 1 1 /blocks/blocks.2/conv/conv.5/PRelu_output_0 /blocks/blocks.2/conv/conv.6/Conv_output_0 0=64 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-BinaryOp         /blocks/blocks.2/Add     2 1 /blocks/blocks.1/Add_output_0_splitncnn_0 /blocks/blocks.2/conv/conv.6/Conv_output_0 /blocks/blocks.2/Add_output_0 0=0
-Split            splitncnn_2              1 2 /blocks/blocks.2/Add_output_0 /blocks/blocks.2/Add_output_0_splitncnn_0 /blocks/blocks.2/Add_output_0_splitncnn_1
-Convolution      /blocks/blocks.3/conv/conv.0/Conv 1 1 /blocks/blocks.2/Add_output_0_splitncnn_1 /blocks/blocks.3/conv/conv.0/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-PReLU            /blocks/blocks.3/conv/conv.2/PRelu 1 1 /blocks/blocks.3/conv/conv.0/Conv_output_0 /blocks/blocks.3/conv/conv.2/PRelu_output_0 0=128
-ConvolutionDepthWise /blocks/blocks.3/conv/conv.3/Conv 1 1 /blocks/blocks.3/conv/conv.2/PRelu_output_0 /blocks/blocks.3/conv/conv.3/Conv_output_0 0=128 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=1152 7=128
-PReLU            /blocks/blocks.3/conv/conv.5/PRelu 1 1 /blocks/blocks.3/conv/conv.3/Conv_output_0 /blocks/blocks.3/conv/conv.5/PRelu_output_0 0=128
-Convolution      /blocks/blocks.3/conv/conv.6/Conv 1 1 /blocks/blocks.3/conv/conv.5/PRelu_output_0 /blocks/blocks.3/conv/conv.6/Conv_output_0 0=64 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-BinaryOp         /blocks/blocks.3/Add     2 1 /blocks/blocks.2/Add_output_0_splitncnn_0 /blocks/blocks.3/conv/conv.6/Conv_output_0 /blocks/blocks.3/Add_output_0 0=0
-Split            splitncnn_3              1 2 /blocks/blocks.3/Add_output_0 /blocks/blocks.3/Add_output_0_splitncnn_0 /blocks/blocks.3/Add_output_0_splitncnn_1
-Convolution      /blocks/blocks.4/conv/conv.0/Conv 1 1 /blocks/blocks.3/Add_output_0_splitncnn_1 /blocks/blocks.4/conv/conv.0/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-PReLU            /blocks/blocks.4/conv/conv.2/PRelu 1 1 /blocks/blocks.4/conv/conv.0/Conv_output_0 /blocks/blocks.4/conv/conv.2/PRelu_output_0 0=128
-ConvolutionDepthWise /blocks/blocks.4/conv/conv.3/Conv 1 1 /blocks/blocks.4/conv/conv.2/PRelu_output_0 /blocks/blocks.4/conv/conv.3/Conv_output_0 0=128 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=1152 7=128
-PReLU            /blocks/blocks.4/conv/conv.5/PRelu 1 1 /blocks/blocks.4/conv/conv.3/Conv_output_0 /blocks/blocks.4/conv/conv.5/PRelu_output_0 0=128
-Convolution      /blocks/blocks.4/conv/conv.6/Conv 1 1 /blocks/blocks.4/conv/conv.5/PRelu_output_0 /blocks/blocks.4/conv/conv.6/Conv_output_0 0=64 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=8192
-BinaryOp         /blocks/blocks.4/Add     2 1 /blocks/blocks.3/Add_output_0_splitncnn_0 /blocks/blocks.4/conv/conv.6/Conv_output_0 /blocks/blocks.4/Add_output_0 0=0
-Convolution      /blocks/blocks.5/conv/conv.0/Conv 1 1 /blocks/blocks.4/Add_output_0 /blocks/blocks.5/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=16384
-PReLU            /blocks/blocks.5/conv/conv.2/PRelu 1 1 /blocks/blocks.5/conv/conv.0/Conv_output_0 /blocks/blocks.5/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.5/conv/conv.3/Conv 1 1 /blocks/blocks.5/conv/conv.2/PRelu_output_0 /blocks/blocks.5/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=2 13=2 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.5/conv/conv.5/PRelu 1 1 /blocks/blocks.5/conv/conv.3/Conv_output_0 /blocks/blocks.5/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.5/conv/conv.6/Conv 1 1 /blocks/blocks.5/conv/conv.5/PRelu_output_0 /blocks/blocks.5/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-Split            splitncnn_4              1 2 /blocks/blocks.5/conv/conv.6/Conv_output_0 /blocks/blocks.5/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.5/conv/conv.6/Conv_output_0_splitncnn_1
-Convolution      /blocks/blocks.6/conv/conv.0/Conv 1 1 /blocks/blocks.5/conv/conv.6/Conv_output_0_splitncnn_1 /blocks/blocks.6/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-PReLU            /blocks/blocks.6/conv/conv.2/PRelu 1 1 /blocks/blocks.6/conv/conv.0/Conv_output_0 /blocks/blocks.6/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.6/conv/conv.3/Conv 1 1 /blocks/blocks.6/conv/conv.2/PRelu_output_0 /blocks/blocks.6/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.6/conv/conv.5/PRelu 1 1 /blocks/blocks.6/conv/conv.3/Conv_output_0 /blocks/blocks.6/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.6/conv/conv.6/Conv 1 1 /blocks/blocks.6/conv/conv.5/PRelu_output_0 /blocks/blocks.6/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-BinaryOp         /blocks/blocks.6/Add     2 1 /blocks/blocks.5/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.6/conv/conv.6/Conv_output_0 /blocks/blocks.6/Add_output_0 0=0
-Split            splitncnn_5              1 2 /blocks/blocks.6/Add_output_0 /blocks/blocks.6/Add_output_0_splitncnn_0 /blocks/blocks.6/Add_output_0_splitncnn_1
-Convolution      /blocks/blocks.7/conv/conv.0/Conv 1 1 /blocks/blocks.6/Add_output_0_splitncnn_1 /blocks/blocks.7/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-PReLU            /blocks/blocks.7/conv/conv.2/PRelu 1 1 /blocks/blocks.7/conv/conv.0/Conv_output_0 /blocks/blocks.7/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.7/conv/conv.3/Conv 1 1 /blocks/blocks.7/conv/conv.2/PRelu_output_0 /blocks/blocks.7/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.7/conv/conv.5/PRelu 1 1 /blocks/blocks.7/conv/conv.3/Conv_output_0 /blocks/blocks.7/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.7/conv/conv.6/Conv 1 1 /blocks/blocks.7/conv/conv.5/PRelu_output_0 /blocks/blocks.7/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-BinaryOp         /blocks/blocks.7/Add     2 1 /blocks/blocks.6/Add_output_0_splitncnn_0 /blocks/blocks.7/conv/conv.6/Conv_output_0 /blocks/blocks.7/Add_output_0 0=0
-Split            splitncnn_6              1 2 /blocks/blocks.7/Add_output_0 /blocks/blocks.7/Add_output_0_splitncnn_0 /blocks/blocks.7/Add_output_0_splitncnn_1
-Convolution      /blocks/blocks.8/conv/conv.0/Conv 1 1 /blocks/blocks.7/Add_output_0_splitncnn_1 /blocks/blocks.8/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-PReLU            /blocks/blocks.8/conv/conv.2/PRelu 1 1 /blocks/blocks.8/conv/conv.0/Conv_output_0 /blocks/blocks.8/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.8/conv/conv.3/Conv 1 1 /blocks/blocks.8/conv/conv.2/PRelu_output_0 /blocks/blocks.8/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.8/conv/conv.5/PRelu 1 1 /blocks/blocks.8/conv/conv.3/Conv_output_0 /blocks/blocks.8/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.8/conv/conv.6/Conv 1 1 /blocks/blocks.8/conv/conv.5/PRelu_output_0 /blocks/blocks.8/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-BinaryOp         /blocks/blocks.8/Add     2 1 /blocks/blocks.7/Add_output_0_splitncnn_0 /blocks/blocks.8/conv/conv.6/Conv_output_0 /blocks/blocks.8/Add_output_0 0=0
-Split            splitncnn_7              1 2 /blocks/blocks.8/Add_output_0 /blocks/blocks.8/Add_output_0_splitncnn_0 /blocks/blocks.8/Add_output_0_splitncnn_1
-Convolution      /blocks/blocks.9/conv/conv.0/Conv 1 1 /blocks/blocks.8/Add_output_0_splitncnn_1 /blocks/blocks.9/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-PReLU            /blocks/blocks.9/conv/conv.2/PRelu 1 1 /blocks/blocks.9/conv/conv.0/Conv_output_0 /blocks/blocks.9/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.9/conv/conv.3/Conv 1 1 /blocks/blocks.9/conv/conv.2/PRelu_output_0 /blocks/blocks.9/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.9/conv/conv.5/PRelu 1 1 /blocks/blocks.9/conv/conv.3/Conv_output_0 /blocks/blocks.9/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.9/conv/conv.6/Conv 1 1 /blocks/blocks.9/conv/conv.5/PRelu_output_0 /blocks/blocks.9/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-BinaryOp         /blocks/blocks.9/Add     2 1 /blocks/blocks.8/Add_output_0_splitncnn_0 /blocks/blocks.9/conv/conv.6/Conv_output_0 /blocks/blocks.9/Add_output_0 0=0
-Split            splitncnn_8              1 2 /blocks/blocks.9/Add_output_0 /blocks/blocks.9/Add_output_0_splitncnn_0 /blocks/blocks.9/Add_output_0_splitncnn_1
-Convolution      /blocks/blocks.10/conv/conv.0/Conv 1 1 /blocks/blocks.9/Add_output_0_splitncnn_1 /blocks/blocks.10/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-PReLU            /blocks/blocks.10/conv/conv.2/PRelu 1 1 /blocks/blocks.10/conv/conv.0/Conv_output_0 /blocks/blocks.10/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.10/conv/conv.3/Conv 1 1 /blocks/blocks.10/conv/conv.2/PRelu_output_0 /blocks/blocks.10/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.10/conv/conv.5/PRelu 1 1 /blocks/blocks.10/conv/conv.3/Conv_output_0 /blocks/blocks.10/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.10/conv/conv.6/Conv 1 1 /blocks/blocks.10/conv/conv.5/PRelu_output_0 /blocks/blocks.10/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-BinaryOp         /blocks/blocks.10/Add    2 1 /blocks/blocks.9/Add_output_0_splitncnn_0 /blocks/blocks.10/conv/conv.6/Conv_output_0 /blocks/blocks.10/Add_output_0 0=0
-Split            splitncnn_9              1 2 /blocks/blocks.10/Add_output_0 /blocks/blocks.10/Add_output_0_splitncnn_0 /blocks/blocks.10/Add_output_0_splitncnn_1
-Convolution      /blocks/blocks.11/conv/conv.0/Conv 1 1 /blocks/blocks.10/Add_output_0_splitncnn_1 /blocks/blocks.11/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-PReLU            /blocks/blocks.11/conv/conv.2/PRelu 1 1 /blocks/blocks.11/conv/conv.0/Conv_output_0 /blocks/blocks.11/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.11/conv/conv.3/Conv 1 1 /blocks/blocks.11/conv/conv.2/PRelu_output_0 /blocks/blocks.11/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.11/conv/conv.5/PRelu 1 1 /blocks/blocks.11/conv/conv.3/Conv_output_0 /blocks/blocks.11/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.11/conv/conv.6/Conv 1 1 /blocks/blocks.11/conv/conv.5/PRelu_output_0 /blocks/blocks.11/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-BinaryOp         /blocks/blocks.11/Add    2 1 /blocks/blocks.10/Add_output_0_splitncnn_0 /blocks/blocks.11/conv/conv.6/Conv_output_0 /blocks/blocks.11/Add_output_0 0=0
-Convolution      /blocks/blocks.12/conv/conv.0/Conv 1 1 /blocks/blocks.11/Add_output_0 /blocks/blocks.12/conv/conv.0/Conv_output_0 0=512 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=65536
-PReLU            /blocks/blocks.12/conv/conv.2/PRelu 1 1 /blocks/blocks.12/conv/conv.0/Conv_output_0 /blocks/blocks.12/conv/conv.2/PRelu_output_0 0=512
-ConvolutionDepthWise /blocks/blocks.12/conv/conv.3/Conv 1 1 /blocks/blocks.12/conv/conv.2/PRelu_output_0 /blocks/blocks.12/conv/conv.3/Conv_output_0 0=512 1=3 11=3 2=1 12=1 3=2 13=2 4=1 14=1 15=1 16=1 5=1 6=4608 7=512
-PReLU            /blocks/blocks.12/conv/conv.5/PRelu 1 1 /blocks/blocks.12/conv/conv.3/Conv_output_0 /blocks/blocks.12/conv/conv.5/PRelu_output_0 0=512
-Convolution      /blocks/blocks.12/conv/conv.6/Conv 1 1 /blocks/blocks.12/conv/conv.5/PRelu_output_0 /blocks/blocks.12/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=65536
-Split            splitncnn_10             1 2 /blocks/blocks.12/conv/conv.6/Conv_output_0 /blocks/blocks.12/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.12/conv/conv.6/Conv_output_0_splitncnn_1
-Convolution      /blocks/blocks.13/conv/conv.0/Conv 1 1 /blocks/blocks.12/conv/conv.6/Conv_output_0_splitncnn_1 /blocks/blocks.13/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-PReLU            /blocks/blocks.13/conv/conv.2/PRelu 1 1 /blocks/blocks.13/conv/conv.0/Conv_output_0 /blocks/blocks.13/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.13/conv/conv.3/Conv 1 1 /blocks/blocks.13/conv/conv.2/PRelu_output_0 /blocks/blocks.13/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.13/conv/conv.5/PRelu 1 1 /blocks/blocks.13/conv/conv.3/Conv_output_0 /blocks/blocks.13/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.13/conv/conv.6/Conv 1 1 /blocks/blocks.13/conv/conv.5/PRelu_output_0 /blocks/blocks.13/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-BinaryOp         /blocks/blocks.13/Add    2 1 /blocks/blocks.12/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.13/conv/conv.6/Conv_output_0 /blocks/blocks.13/Add_output_0 0=0
-Split            splitncnn_11             1 2 /blocks/blocks.13/Add_output_0 /blocks/blocks.13/Add_output_0_splitncnn_0 /blocks/blocks.13/Add_output_0_splitncnn_1
-Convolution      /blocks/blocks.14/conv/conv.0/Conv 1 1 /blocks/blocks.13/Add_output_0_splitncnn_1 /blocks/blocks.14/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-PReLU            /blocks/blocks.14/conv/conv.2/PRelu 1 1 /blocks/blocks.14/conv/conv.0/Conv_output_0 /blocks/blocks.14/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.14/conv/conv.3/Conv 1 1 /blocks/blocks.14/conv/conv.2/PRelu_output_0 /blocks/blocks.14/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=1 13=1 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.14/conv/conv.5/PRelu 1 1 /blocks/blocks.14/conv/conv.3/Conv_output_0 /blocks/blocks.14/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.14/conv/conv.6/Conv 1 1 /blocks/blocks.14/conv/conv.5/PRelu_output_0 /blocks/blocks.14/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-BinaryOp         /blocks/blocks.14/Add    2 1 /blocks/blocks.13/Add_output_0_splitncnn_0 /blocks/blocks.14/conv/conv.6/Conv_output_0 /blocks/blocks.14/Add_output_0 0=0
-Convolution      /blocks/blocks.15/conv/conv.0/Conv 1 1 /blocks/blocks.14/Add_output_0 /blocks/blocks.15/conv/conv.0/Conv_output_0 0=256 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-PReLU            /blocks/blocks.15/conv/conv.2/PRelu 1 1 /blocks/blocks.15/conv/conv.0/Conv_output_0 /blocks/blocks.15/conv/conv.2/PRelu_output_0 0=256
-ConvolutionDepthWise /blocks/blocks.15/conv/conv.3/Conv 1 1 /blocks/blocks.15/conv/conv.2/PRelu_output_0 /blocks/blocks.15/conv/conv.3/Conv_output_0 0=256 1=3 11=3 2=1 12=1 3=2 13=2 4=1 14=1 15=1 16=1 5=1 6=2304 7=256
-PReLU            /blocks/blocks.15/conv/conv.5/PRelu 1 1 /blocks/blocks.15/conv/conv.3/Conv_output_0 /blocks/blocks.15/conv/conv.5/PRelu_output_0 0=256
-Convolution      /blocks/blocks.15/conv/conv.6/Conv 1 1 /blocks/blocks.15/conv/conv.5/PRelu_output_0 /blocks/blocks.15/conv/conv.6/Conv_output_0 0=128 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=32768
-Convolution      /conv2/conv/Conv         1 1 /blocks/blocks.15/conv/conv.6/Conv_output_0 /conv2/conv/Conv_output_0 0=512 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=65536
-PReLU            /conv2/prelu/PRelu       1 1 /conv2/conv/Conv_output_0 /conv2/prelu/PRelu_output_0 0=512
-ConvolutionDepthWise /linear7/conv/Conv       1 1 /conv2/prelu/PRelu_output_0 /linear7/conv/Conv_output_0 0=512 1=7 11=7 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=25088 7=512
-Convolution      /linear1/conv/Conv       1 1 /linear7/conv/Conv_output_0 /linear1/conv/Conv_output_0 0=512 1=1 11=1 2=1 12=1 3=1 13=1 4=0 14=0 15=0 16=0 5=1 6=262144
-Reshape          /Reshape                 1 1 /linear1/conv/Conv_output_0 output 0=-1
+Input                    input                    0 1 input
+Convolution              /conv1/conv/Conv         1 1 input /conv1/conv/Conv_output_0 0=64 1=3 3=2 4=1 5=1 6=1728
+PReLU                    /conv1/prelu/PRelu       1 1 /conv1/conv/Conv_output_0 /conv1/prelu/PRelu_output_0 0=64
+ConvolutionDepthWise     /dw_conv1/conv/Conv      1 1 /conv1/prelu/PRelu_output_0 /dw_conv1/conv/Conv_output_0 0=64 1=3 4=1 5=1 6=576 7=64
+PReLU                    /dw_conv1/prelu/PRelu    1 1 /dw_conv1/conv/Conv_output_0 /dw_conv1/prelu/PRelu_output_0 0=64
+Convolution              /blocks/blocks.0/conv/conv.0/Conv 1 1 /dw_conv1/prelu/PRelu_output_0 /blocks/blocks.0/conv/conv.0/Conv_output_0 0=128 1=1 5=1 6=8192
+PReLU                    /blocks/blocks.0/conv/conv.2/PRelu 1 1 /blocks/blocks.0/conv/conv.0/Conv_output_0 /blocks/blocks.0/conv/conv.2/PRelu_output_0 0=128
+ConvolutionDepthWise     /blocks/blocks.0/conv/conv.3/Conv 1 1 /blocks/blocks.0/conv/conv.2/PRelu_output_0 /blocks/blocks.0/conv/conv.3/Conv_output_0 0=128 1=3 3=2 4=1 5=1 6=1152 7=128
+PReLU                    /blocks/blocks.0/conv/conv.5/PRelu 1 1 /blocks/blocks.0/conv/conv.3/Conv_output_0 /blocks/blocks.0/conv/conv.5/PRelu_output_0 0=128
+Convolution              /blocks/blocks.0/conv/conv.6/Conv 1 1 /blocks/blocks.0/conv/conv.5/PRelu_output_0 /blocks/blocks.0/conv/conv.6/Conv_output_0 0=64 1=1 5=1 6=8192
+Split                    splitncnn_0              1 2 /blocks/blocks.0/conv/conv.6/Conv_output_0 /blocks/blocks.0/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.0/conv/conv.6/Conv_output_0_splitncnn_1
+Convolution              /blocks/blocks.1/conv/conv.0/Conv 1 1 /blocks/blocks.0/conv/conv.6/Conv_output_0_splitncnn_1 /blocks/blocks.1/conv/conv.0/Conv_output_0 0=128 1=1 5=1 6=8192
+PReLU                    /blocks/blocks.1/conv/conv.2/PRelu 1 1 /blocks/blocks.1/conv/conv.0/Conv_output_0 /blocks/blocks.1/conv/conv.2/PRelu_output_0 0=128
+ConvolutionDepthWise     /blocks/blocks.1/conv/conv.3/Conv 1 1 /blocks/blocks.1/conv/conv.2/PRelu_output_0 /blocks/blocks.1/conv/conv.3/Conv_output_0 0=128 1=3 4=1 5=1 6=1152 7=128
+PReLU                    /blocks/blocks.1/conv/conv.5/PRelu 1 1 /blocks/blocks.1/conv/conv.3/Conv_output_0 /blocks/blocks.1/conv/conv.5/PRelu_output_0 0=128
+Convolution              /blocks/blocks.1/conv/conv.6/Conv 1 1 /blocks/blocks.1/conv/conv.5/PRelu_output_0 /blocks/blocks.1/conv/conv.6/Conv_output_0 0=64 1=1 5=1 6=8192
+BinaryOp                 /blocks/blocks.1/Add     2 1 /blocks/blocks.0/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.1/conv/conv.6/Conv_output_0 /blocks/blocks.1/Add_output_0
+Split                    splitncnn_1              1 2 /blocks/blocks.1/Add_output_0 /blocks/blocks.1/Add_output_0_splitncnn_0 /blocks/blocks.1/Add_output_0_splitncnn_1
+Convolution              /blocks/blocks.2/conv/conv.0/Conv 1 1 /blocks/blocks.1/Add_output_0_splitncnn_1 /blocks/blocks.2/conv/conv.0/Conv_output_0 0=128 1=1 5=1 6=8192
+PReLU                    /blocks/blocks.2/conv/conv.2/PRelu 1 1 /blocks/blocks.2/conv/conv.0/Conv_output_0 /blocks/blocks.2/conv/conv.2/PRelu_output_0 0=128
+ConvolutionDepthWise     /blocks/blocks.2/conv/conv.3/Conv 1 1 /blocks/blocks.2/conv/conv.2/PRelu_output_0 /blocks/blocks.2/conv/conv.3/Conv_output_0 0=128 1=3 4=1 5=1 6=1152 7=128
+PReLU                    /blocks/blocks.2/conv/conv.5/PRelu 1 1 /blocks/blocks.2/conv/conv.3/Conv_output_0 /blocks/blocks.2/conv/conv.5/PRelu_output_0 0=128
+Convolution              /blocks/blocks.2/conv/conv.6/Conv 1 1 /blocks/blocks.2/conv/conv.5/PRelu_output_0 /blocks/blocks.2/conv/conv.6/Conv_output_0 0=64 1=1 5=1 6=8192
+BinaryOp                 /blocks/blocks.2/Add     2 1 /blocks/blocks.1/Add_output_0_splitncnn_0 /blocks/blocks.2/conv/conv.6/Conv_output_0 /blocks/blocks.2/Add_output_0
+Split                    splitncnn_2              1 2 /blocks/blocks.2/Add_output_0 /blocks/blocks.2/Add_output_0_splitncnn_0 /blocks/blocks.2/Add_output_0_splitncnn_1
+Convolution              /blocks/blocks.3/conv/conv.0/Conv 1 1 /blocks/blocks.2/Add_output_0_splitncnn_1 /blocks/blocks.3/conv/conv.0/Conv_output_0 0=128 1=1 5=1 6=8192
+PReLU                    /blocks/blocks.3/conv/conv.2/PRelu 1 1 /blocks/blocks.3/conv/conv.0/Conv_output_0 /blocks/blocks.3/conv/conv.2/PRelu_output_0 0=128
+ConvolutionDepthWise     /blocks/blocks.3/conv/conv.3/Conv 1 1 /blocks/blocks.3/conv/conv.2/PRelu_output_0 /blocks/blocks.3/conv/conv.3/Conv_output_0 0=128 1=3 4=1 5=1 6=1152 7=128
+PReLU                    /blocks/blocks.3/conv/conv.5/PRelu 1 1 /blocks/blocks.3/conv/conv.3/Conv_output_0 /blocks/blocks.3/conv/conv.5/PRelu_output_0 0=128
+Convolution              /blocks/blocks.3/conv/conv.6/Conv 1 1 /blocks/blocks.3/conv/conv.5/PRelu_output_0 /blocks/blocks.3/conv/conv.6/Conv_output_0 0=64 1=1 5=1 6=8192
+BinaryOp                 /blocks/blocks.3/Add     2 1 /blocks/blocks.2/Add_output_0_splitncnn_0 /blocks/blocks.3/conv/conv.6/Conv_output_0 /blocks/blocks.3/Add_output_0
+Split                    splitncnn_3              1 2 /blocks/blocks.3/Add_output_0 /blocks/blocks.3/Add_output_0_splitncnn_0 /blocks/blocks.3/Add_output_0_splitncnn_1
+Convolution              /blocks/blocks.4/conv/conv.0/Conv 1 1 /blocks/blocks.3/Add_output_0_splitncnn_1 /blocks/blocks.4/conv/conv.0/Conv_output_0 0=128 1=1 5=1 6=8192
+PReLU                    /blocks/blocks.4/conv/conv.2/PRelu 1 1 /blocks/blocks.4/conv/conv.0/Conv_output_0 /blocks/blocks.4/conv/conv.2/PRelu_output_0 0=128
+ConvolutionDepthWise     /blocks/blocks.4/conv/conv.3/Conv 1 1 /blocks/blocks.4/conv/conv.2/PRelu_output_0 /blocks/blocks.4/conv/conv.3/Conv_output_0 0=128 1=3 4=1 5=1 6=1152 7=128
+PReLU                    /blocks/blocks.4/conv/conv.5/PRelu 1 1 /blocks/blocks.4/conv/conv.3/Conv_output_0 /blocks/blocks.4/conv/conv.5/PRelu_output_0 0=128
+Convolution              /blocks/blocks.4/conv/conv.6/Conv 1 1 /blocks/blocks.4/conv/conv.5/PRelu_output_0 /blocks/blocks.4/conv/conv.6/Conv_output_0 0=64 1=1 5=1 6=8192
+BinaryOp                 /blocks/blocks.4/Add     2 1 /blocks/blocks.3/Add_output_0_splitncnn_0 /blocks/blocks.4/conv/conv.6/Conv_output_0 /blocks/blocks.4/Add_output_0
+Convolution              /blocks/blocks.5/conv/conv.0/Conv 1 1 /blocks/blocks.4/Add_output_0 /blocks/blocks.5/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=16384
+PReLU                    /blocks/blocks.5/conv/conv.2/PRelu 1 1 /blocks/blocks.5/conv/conv.0/Conv_output_0 /blocks/blocks.5/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.5/conv/conv.3/Conv 1 1 /blocks/blocks.5/conv/conv.2/PRelu_output_0 /blocks/blocks.5/conv/conv.3/Conv_output_0 0=256 1=3 3=2 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.5/conv/conv.5/PRelu 1 1 /blocks/blocks.5/conv/conv.3/Conv_output_0 /blocks/blocks.5/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.5/conv/conv.6/Conv 1 1 /blocks/blocks.5/conv/conv.5/PRelu_output_0 /blocks/blocks.5/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+Split                    splitncnn_4              1 2 /blocks/blocks.5/conv/conv.6/Conv_output_0 /blocks/blocks.5/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.5/conv/conv.6/Conv_output_0_splitncnn_1
+Convolution              /blocks/blocks.6/conv/conv.0/Conv 1 1 /blocks/blocks.5/conv/conv.6/Conv_output_0_splitncnn_1 /blocks/blocks.6/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=32768
+PReLU                    /blocks/blocks.6/conv/conv.2/PRelu 1 1 /blocks/blocks.6/conv/conv.0/Conv_output_0 /blocks/blocks.6/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.6/conv/conv.3/Conv 1 1 /blocks/blocks.6/conv/conv.2/PRelu_output_0 /blocks/blocks.6/conv/conv.3/Conv_output_0 0=256 1=3 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.6/conv/conv.5/PRelu 1 1 /blocks/blocks.6/conv/conv.3/Conv_output_0 /blocks/blocks.6/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.6/conv/conv.6/Conv 1 1 /blocks/blocks.6/conv/conv.5/PRelu_output_0 /blocks/blocks.6/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+BinaryOp                 /blocks/blocks.6/Add     2 1 /blocks/blocks.5/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.6/conv/conv.6/Conv_output_0 /blocks/blocks.6/Add_output_0
+Split                    splitncnn_5              1 2 /blocks/blocks.6/Add_output_0 /blocks/blocks.6/Add_output_0_splitncnn_0 /blocks/blocks.6/Add_output_0_splitncnn_1
+Convolution              /blocks/blocks.7/conv/conv.0/Conv 1 1 /blocks/blocks.6/Add_output_0_splitncnn_1 /blocks/blocks.7/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=32768
+PReLU                    /blocks/blocks.7/conv/conv.2/PRelu 1 1 /blocks/blocks.7/conv/conv.0/Conv_output_0 /blocks/blocks.7/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.7/conv/conv.3/Conv 1 1 /blocks/blocks.7/conv/conv.2/PRelu_output_0 /blocks/blocks.7/conv/conv.3/Conv_output_0 0=256 1=3 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.7/conv/conv.5/PRelu 1 1 /blocks/blocks.7/conv/conv.3/Conv_output_0 /blocks/blocks.7/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.7/conv/conv.6/Conv 1 1 /blocks/blocks.7/conv/conv.5/PRelu_output_0 /blocks/blocks.7/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+BinaryOp                 /blocks/blocks.7/Add     2 1 /blocks/blocks.6/Add_output_0_splitncnn_0 /blocks/blocks.7/conv/conv.6/Conv_output_0 /blocks/blocks.7/Add_output_0
+Split                    splitncnn_6              1 2 /blocks/blocks.7/Add_output_0 /blocks/blocks.7/Add_output_0_splitncnn_0 /blocks/blocks.7/Add_output_0_splitncnn_1
+Convolution              /blocks/blocks.8/conv/conv.0/Conv 1 1 /blocks/blocks.7/Add_output_0_splitncnn_1 /blocks/blocks.8/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=32768
+PReLU                    /blocks/blocks.8/conv/conv.2/PRelu 1 1 /blocks/blocks.8/conv/conv.0/Conv_output_0 /blocks/blocks.8/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.8/conv/conv.3/Conv 1 1 /blocks/blocks.8/conv/conv.2/PRelu_output_0 /blocks/blocks.8/conv/conv.3/Conv_output_0 0=256 1=3 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.8/conv/conv.5/PRelu 1 1 /blocks/blocks.8/conv/conv.3/Conv_output_0 /blocks/blocks.8/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.8/conv/conv.6/Conv 1 1 /blocks/blocks.8/conv/conv.5/PRelu_output_0 /blocks/blocks.8/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+BinaryOp                 /blocks/blocks.8/Add     2 1 /blocks/blocks.7/Add_output_0_splitncnn_0 /blocks/blocks.8/conv/conv.6/Conv_output_0 /blocks/blocks.8/Add_output_0
+Split                    splitncnn_7              1 2 /blocks/blocks.8/Add_output_0 /blocks/blocks.8/Add_output_0_splitncnn_0 /blocks/blocks.8/Add_output_0_splitncnn_1
+Convolution              /blocks/blocks.9/conv/conv.0/Conv 1 1 /blocks/blocks.8/Add_output_0_splitncnn_1 /blocks/blocks.9/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=32768
+PReLU                    /blocks/blocks.9/conv/conv.2/PRelu 1 1 /blocks/blocks.9/conv/conv.0/Conv_output_0 /blocks/blocks.9/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.9/conv/conv.3/Conv 1 1 /blocks/blocks.9/conv/conv.2/PRelu_output_0 /blocks/blocks.9/conv/conv.3/Conv_output_0 0=256 1=3 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.9/conv/conv.5/PRelu 1 1 /blocks/blocks.9/conv/conv.3/Conv_output_0 /blocks/blocks.9/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.9/conv/conv.6/Conv 1 1 /blocks/blocks.9/conv/conv.5/PRelu_output_0 /blocks/blocks.9/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+BinaryOp                 /blocks/blocks.9/Add     2 1 /blocks/blocks.8/Add_output_0_splitncnn_0 /blocks/blocks.9/conv/conv.6/Conv_output_0 /blocks/blocks.9/Add_output_0
+Split                    splitncnn_8              1 2 /blocks/blocks.9/Add_output_0 /blocks/blocks.9/Add_output_0_splitncnn_0 /blocks/blocks.9/Add_output_0_splitncnn_1
+Convolution              /blocks/blocks.10/conv/conv.0/Conv 1 1 /blocks/blocks.9/Add_output_0_splitncnn_1 /blocks/blocks.10/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=32768
+PReLU                    /blocks/blocks.10/conv/conv.2/PRelu 1 1 /blocks/blocks.10/conv/conv.0/Conv_output_0 /blocks/blocks.10/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.10/conv/conv.3/Conv 1 1 /blocks/blocks.10/conv/conv.2/PRelu_output_0 /blocks/blocks.10/conv/conv.3/Conv_output_0 0=256 1=3 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.10/conv/conv.5/PRelu 1 1 /blocks/blocks.10/conv/conv.3/Conv_output_0 /blocks/blocks.10/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.10/conv/conv.6/Conv 1 1 /blocks/blocks.10/conv/conv.5/PRelu_output_0 /blocks/blocks.10/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+BinaryOp                 /blocks/blocks.10/Add    2 1 /blocks/blocks.9/Add_output_0_splitncnn_0 /blocks/blocks.10/conv/conv.6/Conv_output_0 /blocks/blocks.10/Add_output_0
+Split                    splitncnn_9              1 2 /blocks/blocks.10/Add_output_0 /blocks/blocks.10/Add_output_0_splitncnn_0 /blocks/blocks.10/Add_output_0_splitncnn_1
+Convolution              /blocks/blocks.11/conv/conv.0/Conv 1 1 /blocks/blocks.10/Add_output_0_splitncnn_1 /blocks/blocks.11/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=32768
+PReLU                    /blocks/blocks.11/conv/conv.2/PRelu 1 1 /blocks/blocks.11/conv/conv.0/Conv_output_0 /blocks/blocks.11/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.11/conv/conv.3/Conv 1 1 /blocks/blocks.11/conv/conv.2/PRelu_output_0 /blocks/blocks.11/conv/conv.3/Conv_output_0 0=256 1=3 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.11/conv/conv.5/PRelu 1 1 /blocks/blocks.11/conv/conv.3/Conv_output_0 /blocks/blocks.11/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.11/conv/conv.6/Conv 1 1 /blocks/blocks.11/conv/conv.5/PRelu_output_0 /blocks/blocks.11/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+BinaryOp                 /blocks/blocks.11/Add    2 1 /blocks/blocks.10/Add_output_0_splitncnn_0 /blocks/blocks.11/conv/conv.6/Conv_output_0 /blocks/blocks.11/Add_output_0
+Convolution              /blocks/blocks.12/conv/conv.0/Conv 1 1 /blocks/blocks.11/Add_output_0 /blocks/blocks.12/conv/conv.0/Conv_output_0 0=512 1=1 5=1 6=65536
+PReLU                    /blocks/blocks.12/conv/conv.2/PRelu 1 1 /blocks/blocks.12/conv/conv.0/Conv_output_0 /blocks/blocks.12/conv/conv.2/PRelu_output_0 0=512
+ConvolutionDepthWise     /blocks/blocks.12/conv/conv.3/Conv 1 1 /blocks/blocks.12/conv/conv.2/PRelu_output_0 /blocks/blocks.12/conv/conv.3/Conv_output_0 0=512 1=3 3=2 4=1 5=1 6=4608 7=512
+PReLU                    /blocks/blocks.12/conv/conv.5/PRelu 1 1 /blocks/blocks.12/conv/conv.3/Conv_output_0 /blocks/blocks.12/conv/conv.5/PRelu_output_0 0=512
+Convolution              /blocks/blocks.12/conv/conv.6/Conv 1 1 /blocks/blocks.12/conv/conv.5/PRelu_output_0 /blocks/blocks.12/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=65536
+Split                    splitncnn_10             1 2 /blocks/blocks.12/conv/conv.6/Conv_output_0 /blocks/blocks.12/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.12/conv/conv.6/Conv_output_0_splitncnn_1
+Convolution              /blocks/blocks.13/conv/conv.0/Conv 1 1 /blocks/blocks.12/conv/conv.6/Conv_output_0_splitncnn_1 /blocks/blocks.13/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=32768
+PReLU                    /blocks/blocks.13/conv/conv.2/PRelu 1 1 /blocks/blocks.13/conv/conv.0/Conv_output_0 /blocks/blocks.13/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.13/conv/conv.3/Conv 1 1 /blocks/blocks.13/conv/conv.2/PRelu_output_0 /blocks/blocks.13/conv/conv.3/Conv_output_0 0=256 1=3 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.13/conv/conv.5/PRelu 1 1 /blocks/blocks.13/conv/conv.3/Conv_output_0 /blocks/blocks.13/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.13/conv/conv.6/Conv 1 1 /blocks/blocks.13/conv/conv.5/PRelu_output_0 /blocks/blocks.13/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+BinaryOp                 /blocks/blocks.13/Add    2 1 /blocks/blocks.12/conv/conv.6/Conv_output_0_splitncnn_0 /blocks/blocks.13/conv/conv.6/Conv_output_0 /blocks/blocks.13/Add_output_0
+Split                    splitncnn_11             1 2 /blocks/blocks.13/Add_output_0 /blocks/blocks.13/Add_output_0_splitncnn_0 /blocks/blocks.13/Add_output_0_splitncnn_1
+Convolution              /blocks/blocks.14/conv/conv.0/Conv 1 1 /blocks/blocks.13/Add_output_0_splitncnn_1 /blocks/blocks.14/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=32768
+PReLU                    /blocks/blocks.14/conv/conv.2/PRelu 1 1 /blocks/blocks.14/conv/conv.0/Conv_output_0 /blocks/blocks.14/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.14/conv/conv.3/Conv 1 1 /blocks/blocks.14/conv/conv.2/PRelu_output_0 /blocks/blocks.14/conv/conv.3/Conv_output_0 0=256 1=3 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.14/conv/conv.5/PRelu 1 1 /blocks/blocks.14/conv/conv.3/Conv_output_0 /blocks/blocks.14/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.14/conv/conv.6/Conv 1 1 /blocks/blocks.14/conv/conv.5/PRelu_output_0 /blocks/blocks.14/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+BinaryOp                 /blocks/blocks.14/Add    2 1 /blocks/blocks.13/Add_output_0_splitncnn_0 /blocks/blocks.14/conv/conv.6/Conv_output_0 /blocks/blocks.14/Add_output_0
+Convolution              /blocks/blocks.15/conv/conv.0/Conv 1 1 /blocks/blocks.14/Add_output_0 /blocks/blocks.15/conv/conv.0/Conv_output_0 0=256 1=1 5=1 6=32768
+PReLU                    /blocks/blocks.15/conv/conv.2/PRelu 1 1 /blocks/blocks.15/conv/conv.0/Conv_output_0 /blocks/blocks.15/conv/conv.2/PRelu_output_0 0=256
+ConvolutionDepthWise     /blocks/blocks.15/conv/conv.3/Conv 1 1 /blocks/blocks.15/conv/conv.2/PRelu_output_0 /blocks/blocks.15/conv/conv.3/Conv_output_0 0=256 1=3 3=2 4=1 5=1 6=2304 7=256
+PReLU                    /blocks/blocks.15/conv/conv.5/PRelu 1 1 /blocks/blocks.15/conv/conv.3/Conv_output_0 /blocks/blocks.15/conv/conv.5/PRelu_output_0 0=256
+Convolution              /blocks/blocks.15/conv/conv.6/Conv 1 1 /blocks/blocks.15/conv/conv.5/PRelu_output_0 /blocks/blocks.15/conv/conv.6/Conv_output_0 0=128 1=1 5=1 6=32768
+Convolution              /conv2/conv/Conv         1 1 /blocks/blocks.15/conv/conv.6/Conv_output_0 /conv2/conv/Conv_output_0 0=512 1=1 5=1 6=65536
+PReLU                    /conv2/prelu/PRelu       1 1 /conv2/conv/Conv_output_0 /conv2/prelu/PRelu_output_0 0=512
+ConvolutionDepthWise     /linear7/conv/Conv       1 1 /conv2/prelu/PRelu_output_0 /linear7/conv/Conv_output_0 0=512 1=7 5=1 6=25088 7=512
+Convolution              /linear1/conv/Conv       1 1 /linear7/conv/Conv_output_0 /linear1/conv/Conv_output_0 0=512 1=1 5=1 6=262144
+Reshape                  /Reshape                 1 1 /linear1/conv/Conv_output_0 output 0=-1

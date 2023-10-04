@@ -533,3 +533,100 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 
     return 0;
 }
+
+int Yolo::drawGallery(cv::Mat& rgb, const std::vector<Object>& objects)
+{
+    static const char* class_names[] = {
+        "product", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
+        "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
+        "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
+        "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
+        "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
+        "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch",
+        "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone",
+        "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear",
+        "hair drier", "toothbrush"
+    };
+
+    static const unsigned char colors[19][3] = {
+        { 54,  67, 244},
+        { 99,  30, 233},
+        {176,  39, 156},
+        {183,  58, 103},
+        {181,  81,  63},
+        {243, 150,  33},
+        {244, 169,   3},
+        {212, 188,   0},
+        {136, 150,   0},
+        { 80, 175,  76},
+        { 74, 195, 139},
+        { 57, 220, 205},
+        { 59, 235, 255},
+        {  7, 193, 255},
+        {  0, 152, 255},
+        { 34,  87, 255},
+        { 72,  85, 121},
+        {158, 158, 158},
+        {139, 125,  96}
+    };
+
+    int color_index = 0;
+
+    for (size_t i = 0; i < objects.size(); i++)
+    {
+        const Object& obj = objects[i];
+        cv::Mat croppedImage = rgb(obj.rect);
+
+        ncnn::Mat inBlob = ncnn::Mat::from_pixels_resize(croppedImage.data, ncnn::Mat::PIXEL_BGR, croppedImage.cols, croppedImage.rows, 224, 224);
+//        const float mean_valsXS[3] = {104.f, 117.f, 123.f};
+//        inBlob.substract_mean_normalize(mean_valsXS, 0);
+        const float mean_vals[3] = {127.5f, 127.5f, 127.5f};
+        const float norm_vals[3] = {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5};
+        inBlob.substract_mean_normalize(mean_vals, norm_vals);
+        ncnn::Extractor exS = MFnet.create_extractor();
+        exS.input("input", inBlob);
+        ncnn::Mat outS;
+        exS.extract("output", outS);
+        std::vector<float> feature_vec = convert_to_vector(outS);
+        int index = findMostSimilar(feature_vec);
+
+
+        const unsigned char* color = colors[color_index % 19];
+        color_index++;
+
+        cv::Scalar cc(color[0], color[1], color[2]);
+
+        cv::rectangle(rgb, obj.rect, cc, 2);
+
+
+
+
+        int baseLine = 0;
+        cv::Size label_size;
+
+        int x = obj.rect.x;
+        if (index == -1){
+            label_size = cv::getTextSize("unknown", cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+        }
+        else{
+            label_size = cv::getTextSize(labels[index], cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+        }
+        int y = obj.rect.y - label_size.height - baseLine;
+        if (y < 0)
+            y = 0;
+        if (x + label_size.width > rgb.cols)
+            x = rgb.cols - label_size.width;
+        cv::rectangle(rgb, cv::Rect(cv::Point(x, y), cv::Size(label_size.width, label_size.height + baseLine)), cc, -1);
+
+        cv::Scalar textcc = (color[0] + color[1] + color[2] >= 381) ? cv::Scalar(0, 0, 0) : cv::Scalar(255, 255, 255);
+        if (index == -1){
+            cv::putText(rgb, "unkown", cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+        }
+        else{
+            cv::putText(rgb, labels[index], cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+        }
+        
+    }
+
+    return 0;
+}
