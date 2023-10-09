@@ -39,7 +39,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private int current_cpugpu = 0;
 
     private SurfaceView cameraView;
-    private ImageView imageView;
+    private ZoomableImageView imageView;
     private Bitmap yourselectedImage = null;
 
     
@@ -87,7 +87,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         yolov8ncnn.openCamera(1);
         
         // Toggle view visibility
-        imageView = (ImageView) findViewById(R.id.myImageView);
+        imageView = (ZoomableImageView) findViewById(R.id.myImageView);
         imageView.setVisibility(View.GONE);
         cameraView.setVisibility(View.VISIBLE);
 
@@ -119,7 +119,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                 Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImageUri), null, options);
                 yolov8ncnn.detectImage(bitmap);
 
-                imageView = (ImageView) findViewById(R.id.myImageView);
+                imageView = (ZoomableImageView) findViewById(R.id.myImageView);
                 
                 imageView.setImageBitmap(bitmap);
 

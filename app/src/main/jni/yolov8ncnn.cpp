@@ -29,9 +29,11 @@
 #include "yolo.h"
 
 #include "ndkcamera.h"
+#include "opencv-mobile-4.5.1-android/sdk/native/jni/include/opencv2/highgui/highgui.hpp"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+//#include <opencv2/highgui/highgui.hpp>
 
 #if __ARM_NEON
 #include <arm_neon.h>
@@ -282,6 +284,9 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_detectImage(JN
     cv::Mat img(info.height, info.width, CV_8UC4, pixels);
     cv::Mat img_bgr;
     cv::cvtColor(img, img_bgr, cv::COLOR_RGBA2BGR);
+//    std::string savePath = "/storage/self/primary/DCIM/Camera";
+//    cv::imwrite(savePath, img_bgr);
+
 
 
     // Lock the mutex and detect
