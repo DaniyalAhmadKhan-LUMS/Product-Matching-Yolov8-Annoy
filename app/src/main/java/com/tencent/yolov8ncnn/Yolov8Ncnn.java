@@ -17,7 +17,10 @@ package com.tencent.yolov8ncnn;
 import android.content.res.AssetManager;
 import android.view.Surface;
 import android.graphics.Bitmap;
-
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.VLCVideoLayout;
 public class Yolov8Ncnn
 {
     public native boolean loadModel(AssetManager mgr, int modelid, int cpugpu);
@@ -25,7 +28,7 @@ public class Yolov8Ncnn
     public native boolean closeCamera();
     public native boolean setOutputWindow(Surface surface);
     public native boolean detectImage(Bitmap bitmap);
-
+    
     static {
         System.loadLibrary("yolov8ncnn");
     }

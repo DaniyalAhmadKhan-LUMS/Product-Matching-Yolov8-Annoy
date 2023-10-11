@@ -1,0 +1,11 @@
+# ninja log v5
+3	1240	1697063664632407906	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	49262d50d9a43e94
+4	3408	1697063666756394409	CMakeFiles/yolov8ncnn.dir/kalman_filter.cpp.o	3bdf2fdc1a3b8889
+3	1679	1697063665060405186	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	8539fbe74034d9b2
+4	300	1697063663704413806	CMakeFiles/yolov8ncnn.dir/munkres.cpp.o	34ea61382d663236
+4	795	1697063664192410702	CMakeFiles/yolov8ncnn.dir/track.cpp.o	dba8cc8080b79c28
+4	1088	1697063664480408872	CMakeFiles/yolov8ncnn.dir/tracker.cpp.o	dfd3edd68515e2bf
+0	6	0	clean	b9c7c8390ded0b8e
+3408	4912	1697063668296384627	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/Debug/535x4r3k/obj/x86_64/libyolov8ncnn.so	94205442df1e4b12
+4	482	1697063663884412661	CMakeFiles/yolov8ncnn.dir/ndkcamera.cpp.o	e389fdd1dc6d4322
+0	4	0	clean	b9c7c8390ded0b8e

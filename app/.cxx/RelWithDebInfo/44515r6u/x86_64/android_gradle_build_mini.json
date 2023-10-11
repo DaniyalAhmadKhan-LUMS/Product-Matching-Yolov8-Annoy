@@ -1,0 +1,33 @@
+{
+  "buildFiles": [
+    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/src/main/jni/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/44515r6u/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/44515r6u/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "yolov8ncnn-RelWithDebInfo-x86_64": {
+      "artifactName": "yolov8ncnn",
+      "buildCommandComponents": [
+        "/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja",
+        "-C",
+        "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/44515r6u/x86_64",
+        "yolov8ncnn"
+      ],
+      "abi": "x86_64",
+      "output": "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/RelWithDebInfo/44515r6u/obj/x86_64/libyolov8ncnn.so",
+      "runtimeFiles": []
+    }
+  }
+}

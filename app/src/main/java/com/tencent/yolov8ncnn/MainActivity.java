@@ -3,9 +3,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.widget.ImageView;
-
-import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.io.IOException;
 import android.Manifest;
 import android.app.Activity;
@@ -20,9 +20,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import com.tencent.yolov8ncnn.databinding.MainBinding;
 
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 public class MainActivity extends Activity implements SurfaceHolder.Callback
 {
@@ -32,6 +39,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private Yolov8Ncnn yolov8ncnn = new Yolov8Ncnn();
     private int facing = 0;
     private boolean isGallery = false;
+    private MainBinding binding;
 
     private Spinner spinnerModel;
     private Spinner spinnerCPUGPU;
@@ -41,6 +49,9 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private SurfaceView cameraView;
     private ZoomableImageView imageView;
     private Bitmap yourselectedImage = null;
+    private LibVLC libVLC;
+    private MediaPlayer mediaPlayer;
+    private boolean isRtsp = false;
 
     
 
@@ -50,8 +61,12 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-
+        binding = MainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        // final List<String> options = Arrays.asList("-vvv");
+        // libVLC = new LibVLC(this,options);
+        // setContentView(R.layout.main);
+        
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         cameraView = (SurfaceView) findViewById(R.id.cameraview);
@@ -78,12 +93,63 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
             {
             }
         });
-
+        
+        
+        initializePlayer();
         reload();
     }
+    private void initializePlayer() {
+        final List<String> options = Arrays.asList("-vvv");
+        libVLC = new LibVLC(this, options);
+        mediaPlayer = new MediaPlayer(libVLC);
+        
+        binding.videoView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                mediaPlayer.getVLCVout().setVideoSurface(holder.getSurface(), holder);
+                mediaPlayer.getVLCVout().attachViews();
+                mediaPlayer.setAspectRatio("16:9");
+                mediaPlayer.setScale(1);
+            }
 
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                mediaPlayer.getVLCVout().setWindowSize(width, height);
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                mediaPlayer.getVLCVout().detachViews();
+            }
+        });
+    }
+
+    public void startRtspStream(View view) {
+        if (isGallery) {
+            imageView.setVisibility(View.GONE);
+        } else {
+            yolov8ncnn.closeCamera();
+            cameraView.setVisibility(View.GONE);
+        }
+    
+       playStream("rtsp://zephyr.rtsp.stream/movie?streamKey=688720e15d3da72fce9d21806f15d96e");  // replace with your RTSP link
+        isRtsp = true;
+    }
+    private void playStream(String url) {
+        final Media media = new Media(libVLC, Uri.parse(url));
+        mediaPlayer.setMedia(media);
+        media.release();
+        mediaPlayer.play();
+    }
+    private void stopRtspStream() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();  // Stop the RTSP stream
+        }
+        isRtsp = false;
+    }
     public void resumeCamera(View view) {
         // Restart the camera
+        stopRtspStream(); 
         yolov8ncnn.openCamera(1);
         
         // Toggle view visibility
@@ -102,6 +168,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     }
 
     public void onImageSelectButtonClick(View view) {
+        stopRtspStream();
         yolov8ncnn.closeCamera(); // close camera first
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_SELECT_IMAGE);
@@ -172,24 +239,41 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
-
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
-        {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, REQUEST_CAMERA);
+    
+        if (isRtsp) {
+            if (mediaPlayer != null) {
+                mediaPlayer.play();
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, REQUEST_CAMERA);
+            }
+    
+            yolov8ncnn.openCamera(1);
         }
-
-        yolov8ncnn.openCamera(1);
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
-
-        yolov8ncnn.closeCamera();
+    
+        if (isRtsp && mediaPlayer != null) {
+            mediaPlayer.pause();
+        } else {
+            yolov8ncnn.closeCamera();
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        if (libVLC != null) {
+            libVLC.release();
+        }
     }
 
 }

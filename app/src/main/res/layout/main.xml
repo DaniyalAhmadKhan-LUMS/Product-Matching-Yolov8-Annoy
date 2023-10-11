@@ -1,58 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Product Matching Demo"
-        android:textSize="20sp"
         android:layout_gravity="center"
-        android:padding="16dp" />
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-
-    </LinearLayout>
+        android:padding="16dp"
+        android:text="Product Matching Demo"
+        android:textSize="20sp" />
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-
-    <Spinner
-        android:id="@+id/spinnerCPUGPU"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawSelectorOnTop="true"
-        android:entries="@array/cpugpu_array" />
-    <Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:onClick="resumeCamera"
-    android:text="Resume Camera"/>
-    <Button
-    android:id="@+id/btn_gallery"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Open Gallery"
-    android:onClick="openGallery"/>
-
+        android:orientation="horizontal">
+        <!-- You can add child views here if needed -->
     </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <Spinner
+                android:id="@+id/spinnerCPUGPU"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawSelectorOnTop="true"
+                android:entries="@array/cpugpu_array" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="resumeCamera"
+                android:text="Resume Camera" />
+
+            <Button
+                android:id="@+id/btn_rtsp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="startRtspStream"
+                android:text="View RTSP Stream" />
+
+            <Button
+                android:id="@+id/btn_gallery"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="openGallery"
+                android:text="Open Gallery" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <SurfaceView
         android:id="@+id/cameraview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <com.tencent.yolov8ncnn.ZoomableImageView
-    android:id="@+id/myImageView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" 
-    android:visibility="gone" />
+        android:id="@+id/myImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <org.videolan.libvlc.media.VideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

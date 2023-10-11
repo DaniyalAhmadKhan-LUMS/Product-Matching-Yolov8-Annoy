@@ -1,14 +1,19 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "29.0.2"
+    namespace 'com.tencent.yolov8ncnn'
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.tencent.yolov8ncnn"
-        archivesBaseName = "$applicationId"
 
-        minSdkVersion 24
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
     }
 
     externalNativeBuild {
@@ -17,8 +22,23 @@ android {
             path file('src/main/jni/CMakeLists.txt')
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
 
     dependencies {
-        implementation 'com.android.support:support-v4:24.0.0'
+        implementation 'androidx.appcompat:appcompat:1.6.1'
+        implementation 'com.google.android.material:material:1.8.0'
+        implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+        implementation 'androidx.navigation:navigation-fragment:2.5.3'
+        implementation 'androidx.navigation:navigation-ui:2.5.3'
+        implementation "org.videolan.android:libvlc-all:4.0.0-eap8"
+        testImplementation 'junit:junit:4.13.2'
+        androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+        androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     }
 }
