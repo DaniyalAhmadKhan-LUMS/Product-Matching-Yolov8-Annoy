@@ -95,7 +95,7 @@ endif()
 
 
 # Android API level from which OpenCV has been compiled is remembered
-set(OpenCV_ANDROID_NATIVE_API_LEVEL "24")
+set(OpenCV_ANDROID_NATIVE_API_LEVEL "21")
 
 # ==============================================================
 #  Check OpenCV availability
@@ -109,6 +109,13 @@ if(OpenCV_ANDROID_NATIVE_API_LEVEL GREATER ANDROID_NATIVE_API_LEVEL)
 endif()
 
 
+if(NOT TARGET ippicv)
+  add_library(ippicv STATIC IMPORTED)
+  set_target_properties(ippicv PROPERTIES
+    IMPORTED_LINK_INTERFACE_LIBRARIES ""
+    IMPORTED_LOCATION "${OpenCV_INSTALL_PATH}/sdk/native/3rdparty/libs/x86_64/libippicv.a"
+  )
+endif()
 
 
 
@@ -118,7 +125,7 @@ set(OpenCV_SHARED OFF)
 # Enables mangled install paths, that help with side by side installs
 set(OpenCV_USE_MANGLED_PATHS FALSE)
 
-set(OpenCV_LIB_COMPONENTS opencv_core;opencv_features2d;opencv_highgui;opencv_imgproc;opencv_photo;opencv_video)
+set(OpenCV_LIB_COMPONENTS opencv_calib3d;opencv_core;opencv_dnn;opencv_features2d;opencv_flann;opencv_gapi;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_ml;opencv_objdetect;opencv_photo;opencv_stitching;opencv_video;opencv_videoio;opencv_java)
 set(__OpenCV_INCLUDE_DIRS "${OpenCV_INSTALL_PATH}/sdk/native/jni/include")
 
 set(OpenCV_INCLUDE_DIRS "")

@@ -1,0 +1,7 @@
+Executable : ninja
+arguments : 
+-C
+/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/Product-Matching-Yolov8-AnnoyNew/app/.cxx/Debug/213n6884/armeabi-v7a
+yolov8ncnn
+jvmArgs : 
+

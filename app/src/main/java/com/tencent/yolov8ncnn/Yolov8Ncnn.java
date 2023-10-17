@@ -16,6 +16,7 @@ package com.tencent.yolov8ncnn;
 
 import android.content.res.AssetManager;
 import android.view.Surface;
+import android.graphics.Bitmap;
 
 public class Yolov8Ncnn
 {
@@ -23,6 +24,9 @@ public class Yolov8Ncnn
     public native boolean openCamera(int facing);
     public native boolean closeCamera();
     public native boolean setOutputWindow(Surface surface);
+    public native boolean detectImage(Bitmap bitmap);
+
+    public native void rtspStream(String url_, Surface surface);
 
     static {
         System.loadLibrary("yolov8ncnn");

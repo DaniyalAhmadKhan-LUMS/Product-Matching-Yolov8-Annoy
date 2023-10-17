@@ -76,6 +76,14 @@ CV_WRAP static inline
 AsyncArray testAsyncException()
 {
     AsyncPromise p;
+    try
+    {
+        CV_Error(Error::StsOk, "Test: Generated async error");
+    }
+    catch (const cv::Exception& e)
+    {
+        p.setException(e);
+    }
     return p.getArrayResult();
 }
 

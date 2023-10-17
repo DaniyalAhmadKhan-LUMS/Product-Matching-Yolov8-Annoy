@@ -19,24 +19,93 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
+    <HorizontalScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4">
 
-    <Spinner
-        android:id="@+id/spinnerCPUGPU"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawSelectorOnTop="true"
-        android:entries="@array/cpugpu_array" />
+            <Spinner
+                android:id="@+id/spinnerCPUGPU"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawSelectorOnTop="true"
+                android:entries="@array/cpugpu_array" />
 
-    </LinearLayout>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="resumeCamera"
+                android:text="Resume Camera" />
+
+            <Button
+                android:id="@+id/btn_rtsp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="startRtspStream"
+                android:text="View RTSP Stream" />
+
+            <Button
+                android:id="@+id/btn_gallery"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="openGallery"
+                android:text="Open Gallery" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <SurfaceView
+                android:id="@+id/videoSurfaceView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/rtspUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter RTSP stream URL"
+                android:inputType="textUri" />
+
+            <Button
+                android:id="@+id/startStream"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="onStartStreamClicked"
+                android:text="Start Stream" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <SurfaceView
         android:id="@+id/cameraview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+    <com.tencent.yolov8ncnn.ZoomableImageView
+    android:id="@+id/myImageView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:visibility="gone" />
 
 </LinearLayout>

@@ -1,2 +1,0 @@
-ninja: Entering directory `/home/daniyal/Documents/Upwork/Jared/ncnn-android-yolov8-old/app/.cxx/Debug/r6r2k5a3/arm64-v8a'
-ninja: no work to do.

@@ -29,9 +29,13 @@
 #include "yolo.h"
 
 #include "ndkcamera.h"
-
+//#include "opencv-mobile-4.5.1-android/sdk/native/jni/include/opencv2/highgui/highgui.hpp"
+//#include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/video/video.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/videoio/videoio.hpp>
 
 #if __ARM_NEON
 #include <arm_neon.h>
@@ -40,10 +44,8 @@
 static int draw_unsupported(cv::Mat& rgb)
 {
     const char text[] = "unsupported";
-
     int baseLine = 0;
     cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 1.0, 1, &baseLine);
-
     int y = (rgb.rows - label_size.height) / 2;
     int x = (rgb.cols - label_size.width) / 2;
 
@@ -264,6 +266,88 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_setOutputWindo
     g_camera->set_window(win);
 
     return JNI_TRUE;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_detectImage(JNIEnv* env, jobject thiz, jobject bitmap)
+{
+    // Convert Android Bitmap to cv::Mat
+    AndroidBitmapInfo info;
+    AndroidBitmap_getInfo(env, bitmap, &info);
+
+    // if (info.format != ANDROID_BITMAP_FORMAT_RGB_565)
+    //     return JNI_FALSE;
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
+        return JNI_FALSE;
+    void* pixels = 0;
+    AndroidBitmap_lockPixels(env, bitmap, &pixels);
+
+    cv::Mat img(info.height, info.width, CV_8UC4, pixels);
+    cv::Mat img_bgr;
+    cv::cvtColor(img, img_bgr, cv::COLOR_RGBA2BGR);
+//    std::string savePath = "/storage/self/primary/DCIM/Camera";
+//    cv::imwrite(savePath, img_bgr);
+
+
+
+    // Lock the mutex and detect
+    {
+        ncnn::MutexLockGuard g(lock);
+        if (g_yolo)
+        {
+            std::vector<Object> objects;
+            g_yolo->detect(img_bgr, objects);
+            g_yolo->drawGallery(img_bgr, objects);
+        }
+        else
+        {
+            draw_unsupported(img_bgr);
+        }
+    }
+    cv::cvtColor(img_bgr, img, cv::COLOR_BGR2RGBA);
+    AndroidBitmap_unlockPixels(env, bitmap);
+
+    // Optionally: Convert the cv::Mat back to Bitmap if you've made modifications and want to reflect them in Java.
+
+    // For simplicity, we're just returning JNI_TRUE for now. You may need to handle the return type based on your needs.
+    return JNI_TRUE;
+}
+
+JNIEXPORT void JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_rtspStream(JNIEnv* env, jobject thiz, jstring url_, jobject surface){
+    const char *rtspUrl = env->GetStringUTFChars(url_,JNI_FALSE);
+    ANativeWindow *window = ANativeWindow_fromSurface(env, surface);
+//    cv::getBuildInformation();
+    cv::VideoCapture cap("rtsp://zephyr.rtsp.stream/movie?streamKey=688720e15d3da72fce9d21806f15d96e",cv::CAP_FFMPEG); // open the RTSP stream
+//    cv::VideoCapture cap("/storage/self/primary/DCIM/Camera/VID_20230708_120048.mp4");
+    if (!cap.isOpened()) {
+        __android_log_print(ANDROID_LOG_ERROR, "MainActivity", "Failed to open RTSP stream.");
+        return;
+    }
+    ANativeWindow_acquire(window);
+
+    bool isRunning = true;
+    cv::Mat frame;
+    while (isRunning) {
+        if (!cap.read(frame)) {
+
+            break;
+        }
+        cv::cvtColor(frame, frame, cv::COLOR_BGR2RGBA);
+        if (ANativeWindow_setBuffersGeometry(window, frame.cols, frame.rows, WINDOW_FORMAT_RGBA_8888) < 0) {
+            ANativeWindow_release(window);
+            return;
+        }
+
+        ANativeWindow_Buffer windowBuffer;
+        if (ANativeWindow_lock(window, &windowBuffer, nullptr) < 0) {
+            // Handle error here
+        } else {
+            memcpy(windowBuffer.bits, frame.data, frame.total() * frame.elemSize());
+            ANativeWindow_unlockAndPost(window);
+        }
+    }
+    ANativeWindow_release(window);
+    env->ReleaseStringUTFChars(url_, rtspUrl);
+
 }
 
 }

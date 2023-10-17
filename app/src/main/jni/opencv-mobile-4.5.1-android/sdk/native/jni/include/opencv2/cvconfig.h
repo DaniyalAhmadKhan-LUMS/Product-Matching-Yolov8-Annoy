@@ -69,20 +69,20 @@
 /* #undef HAVE_VULKAN */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-/* #undef HAVE_INTTYPES_H */
+#define HAVE_INTTYPES_H 1
 
 /* Intel Integrated Performance Primitives */
-/* #undef HAVE_IPP */
-/* #undef HAVE_IPP_ICV */
-/* #undef HAVE_IPP_IW */
-/* #undef HAVE_IPP_IW_LL */
+#define HAVE_IPP
+#define HAVE_IPP_ICV
+#define HAVE_IPP_IW
+#define HAVE_IPP_IW_LL
 
 /* JPEG-2000 codec */
-/* #undef HAVE_OPENJPEG */
+#define HAVE_OPENJPEG
 /* #undef HAVE_JASPER */
 
 /* IJG JPEG codec */
-/* #undef HAVE_JPEG */
+#define HAVE_JPEG
 
 /* libpng/png.h needs to be included */
 /* #undef HAVE_LIBPNG_PNG_H */
@@ -107,19 +107,19 @@
 /* #undef HAVE_OPENCL_D3D11_NV */
 
 /* OpenEXR codec */
-/* #undef HAVE_OPENEXR */
+#define HAVE_OPENEXR
 
 /* OpenGL support*/
 /* #undef HAVE_OPENGL */
 
 /* PNG codec */
-/* #undef HAVE_PNG */
+#define HAVE_PNG
 
 /* Posix threads (pthreads) */
 #define HAVE_PTHREAD
 
 /* parallel_for with pthreads */
-/* #undef HAVE_PTHREADS_PF */
+#define HAVE_PTHREADS_PF
 
 /* Qt support */
 /* #undef HAVE_QT */
@@ -128,13 +128,13 @@
 /* #undef HAVE_QT_OPENGL */
 
 /* Intel Threading Building Blocks */
-/* #undef HAVE_TBB */
+#define HAVE_TBB
 
 /* Ste||ar Group High Performance ParallelX */
 /* #undef HAVE_HPX */
 
 /* TIFF codec */
-/* #undef HAVE_TIFF */
+#define HAVE_TIFF
 
 /* Win32 UI */
 /* #undef HAVE_WIN32UI */
@@ -159,9 +159,9 @@
 /* #undef HAVE_OPENVX */
 
 /* OpenCV trace utilities */
-/* #undef OPENCV_TRACE */
+#define OPENCV_TRACE
 
 /* Library QR-code decoding */
-/* #undef HAVE_QUIRC */
+#define HAVE_QUIRC
 
 #endif // OPENCV_CVCONFIG_H_INCLUDED
