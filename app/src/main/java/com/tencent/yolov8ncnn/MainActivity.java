@@ -19,6 +19,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import com.tencent.yolov8ncnn.databinding.MainBinding;
 
@@ -30,6 +31,9 @@ import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.util.VLCVideoLayout;
+import android.view.TextureView;
+import android.graphics.SurfaceTexture;
+import android.view.Surface;
 
 public class MainActivity extends Activity implements SurfaceHolder.Callback
 {
@@ -45,13 +49,16 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private Spinner spinnerCPUGPU;
     private int current_model = 0;
     private int current_cpugpu = 0;
-
+    
     private SurfaceView cameraView;
+    private ImageView videoImage;
     private ZoomableImageView imageView;
     private Bitmap yourselectedImage = null;
     private LibVLC libVLC;
     private MediaPlayer mediaPlayer;
     private boolean isRtsp = false;
+    private TextureView videoView;
+    private Surface textureSurface;
 
     
 
@@ -63,9 +70,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         super.onCreate(savedInstanceState);
         binding = MainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        // final List<String> options = Arrays.asList("-vvv");
-        // libVLC = new LibVLC(this,options);
-        // setContentView(R.layout.main);
         
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -73,7 +77,34 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
         cameraView.getHolder().setFormat(PixelFormat.RGBA_8888);
         cameraView.getHolder().addCallback(this);
+        videoView = findViewById(R.id.videoView);
+        videoView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override
+            public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
+                textureSurface = new Surface(surfaceTexture);
+                mediaPlayer.getVLCVout().setVideoSurface(textureSurface, null);
+                mediaPlayer.getVLCVout().attachViews();
+                mediaPlayer.setAspectRatio("16:9");
+                mediaPlayer.setScale(1);
+            }
 
+            @Override
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
+                mediaPlayer.getVLCVout().setWindowSize(i, i1);
+            }
+
+            @Override
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+                mediaPlayer.getVLCVout().detachViews();
+                return true;
+            }
+
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+                Bitmap currentFrameBitmap = videoView.getBitmap();
+                processAndDisplayFrame(currentFrameBitmap);
+            }
+        });
 
 
         spinnerCPUGPU = (Spinner) findViewById(R.id.spinnerCPUGPU);
@@ -98,30 +129,21 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         initializePlayer();
         reload();
     }
+    private void processAndDisplayFrame(Bitmap frame) {
+        yolov8ncnn.detectImage(frame);
+        // if(videoView.getVisibility() == View.VISIBLE) {
+        //     videoView.setVisibility(View.INVISIBLE);
+        // }
+        // videoImage = (ImageView) findViewById(R.id.videoImageView);
+        // videoImage.setImageBitmap(frame);
+        // videoImage.setVisibility(View.VISIBLE);
+        
+    }
     private void initializePlayer() {
         final List<String> options = Arrays.asList("-vvv");
         libVLC = new LibVLC(this, options);
         mediaPlayer = new MediaPlayer(libVLC);
         
-        binding.videoView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                mediaPlayer.getVLCVout().setVideoSurface(holder.getSurface(), holder);
-                mediaPlayer.getVLCVout().attachViews();
-                mediaPlayer.setAspectRatio("16:9");
-                mediaPlayer.setScale(1);
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                mediaPlayer.getVLCVout().setWindowSize(width, height);
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                mediaPlayer.getVLCVout().detachViews();
-            }
-        });
     }
 
     public void startRtspStream(View view) {
@@ -273,6 +295,9 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         }
         if (libVLC != null) {
             libVLC.release();
+        }
+        if (textureSurface != null) {
+            textureSurface.release();
         }
     }
 

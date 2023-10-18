@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.tencent.yolov8ncnn.app-merged_res-43:/layout_main.xml.flat",
+        "source": "com.tencent.yolov8ncnn.app-main-45:/layout/main.xml"
+    },
+    {
+        "merged": "/home/daniyal/.gradle/daemon/7.5.1/com.tencent.yolov8ncnn.app-merged_res-43:/layout_main.xml.flat",
+        "source": "/home/daniyal/.gradle/daemon/7.5.1/com.tencent.yolov8ncnn.app-main-45:/layout/main.xml"
+    }
+]

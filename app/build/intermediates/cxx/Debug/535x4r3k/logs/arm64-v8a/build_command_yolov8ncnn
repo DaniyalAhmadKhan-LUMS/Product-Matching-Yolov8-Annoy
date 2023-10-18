@@ -1,0 +1,4 @@
+/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja \
+  -C \
+  /home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/Debug/535x4r3k/arm64-v8a \
+  yolov8ncnn
