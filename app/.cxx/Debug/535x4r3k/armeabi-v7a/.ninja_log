@@ -53,3 +53,5 @@
 2	2058	1697148009798099124	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	828e6ab3ee9a265f
 3	3787	1697148011486095139	CMakeFiles/yolov8ncnn.dir/kalman_filter.cpp.o	3089d18891f6409c
 3787	3976	1697148011722094582	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/Debug/535x4r3k/obj/armeabi-v7a/libyolov8ncnn.so	37ce419de9a3620
+6	42	1697627202288503134	build.ninja	5303c904732ea53a
+0	12	0	clean	b9c7c8390ded0b8e
