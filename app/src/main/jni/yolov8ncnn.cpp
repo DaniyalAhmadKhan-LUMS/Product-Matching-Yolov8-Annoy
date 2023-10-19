@@ -280,8 +280,12 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_detectImage(JN
         return JNI_FALSE;
     void* pixels = 0;
     AndroidBitmap_lockPixels(env, bitmap, &pixels);
-
+    if (pixels == NULL) {
+        // Handle error here
+        return JNI_FALSE;
+    }
     cv::Mat img(info.height, info.width, CV_8UC4, pixels);
+
     cv::Mat img_bgr;
     cv::cvtColor(img, img_bgr, cv::COLOR_RGBA2BGR);
 //    std::string savePath = "/storage/self/primary/DCIM/Camera";

@@ -1,4 +1,4 @@
-                        -H/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/src/main/jni
+                        -H/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/src/main/jni
 -DCMAKE_SYSTEM_NAME=Android
 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 -DCMAKE_SYSTEM_VERSION=24
@@ -9,10 +9,10 @@
 -DCMAKE_ANDROID_NDK=/home/daniyal/Android/Sdk/ndk/23.1.7779620
 -DCMAKE_TOOLCHAIN_FILE=/home/daniyal/Android/Sdk/ndk/23.1.7779620/build/cmake/android.toolchain.cmake
 -DCMAKE_MAKE_PROGRAM=/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja
--DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/Debug/535x4r3k/obj/x86
--DCMAKE_RUNTIME_OUTPUT_DIRECTORY=/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/Debug/535x4r3k/obj/x86
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/build/intermediates/cxx/Debug/535x4r3k/obj/x86
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/build/intermediates/cxx/Debug/535x4r3k/obj/x86
 -DCMAKE_BUILD_TYPE=Debug
--B/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/Debug/535x4r3k/x86
+-B/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/.cxx/Debug/535x4r3k/x86
 -GNinja
                         Build command args: []
                         Version: 2

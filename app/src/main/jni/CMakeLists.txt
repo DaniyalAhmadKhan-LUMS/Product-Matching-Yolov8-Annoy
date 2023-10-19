@@ -2,7 +2,7 @@ project(yolov8ncnn)
 
 cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_SOURCE_DIR /home/daniyal/Documents/Upwork/Jared/NCNN-Android-App/combined/Yolo+MobileFaceNet/combined/app/src/main/jni)
+set(CMAKE_SOURCE_DIR /home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/src/main/jni)
 
 # Include Eigen
 include_directories(${CMAKE_SOURCE_DIR}/eigen)

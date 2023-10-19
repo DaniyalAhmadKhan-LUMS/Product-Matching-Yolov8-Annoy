@@ -1,20 +1,20 @@
 {
   "stringTable": {},
   "buildFiles": [
-    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/src/main/jni/CMakeLists.txt"
+    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/src/main/jni/CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
       "/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja",
       "-C",
-      "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/Debug/535x4r3k/arm64-v8a",
+      "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/.cxx/Debug/535x4r3k/arm64-v8a",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
     "/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja",
     "-C",
-    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/Debug/535x4r3k/arm64-v8a",
+    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/.cxx/Debug/535x4r3k/arm64-v8a",
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
@@ -22,13 +22,13 @@
       "buildCommandComponents": [
         "/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja",
         "-C",
-        "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/Debug/535x4r3k/arm64-v8a",
+        "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/.cxx/Debug/535x4r3k/arm64-v8a",
         "yolov8ncnn"
       ],
       "buildType": "debug",
       "abi": "arm64-v8a",
       "artifactName": "yolov8ncnn",
-      "output": "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/Debug/535x4r3k/obj/arm64-v8a/libyolov8ncnn.so",
+      "output": "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/build/intermediates/cxx/Debug/535x4r3k/obj/arm64-v8a/libyolov8ncnn.so",
       "runtimeFiles": []
     }
   },
