@@ -28,6 +28,7 @@ public class Yolov8Ncnn
     public native boolean closeCamera();
     public native boolean setOutputWindow(Surface surface);
     public native boolean detectImage(Bitmap bitmap);
+    public native boolean detectStream(Bitmap bitmap);
     
     static {
         System.loadLibrary("yolov8ncnn");

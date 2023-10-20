@@ -1,19 +1,19 @@
 {
   "buildFiles": [
-    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/src/main/jni/CMakeLists.txt"
+    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/src/main/jni/CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
       "/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja",
       "-C",
-      "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/44515r6u/armeabi-v7a",
+      "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/.cxx/RelWithDebInfo/44515r6u/armeabi-v7a",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
     "/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja",
     "-C",
-    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/44515r6u/armeabi-v7a",
+    "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/.cxx/RelWithDebInfo/44515r6u/armeabi-v7a",
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
@@ -22,11 +22,11 @@
       "buildCommandComponents": [
         "/home/daniyal/Android/Sdk/cmake/3.22.1/bin/ninja",
         "-C",
-        "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/44515r6u/armeabi-v7a",
+        "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/.cxx/RelWithDebInfo/44515r6u/armeabi-v7a",
         "yolov8ncnn"
       ],
       "abi": "armeabi-v7a",
-      "output": "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/RelWithDebInfo/44515r6u/obj/armeabi-v7a/libyolov8ncnn.so",
+      "output": "/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/build/intermediates/cxx/RelWithDebInfo/44515r6u/obj/armeabi-v7a/libyolov8ncnn.so",
       "runtimeFiles": []
     }
   }

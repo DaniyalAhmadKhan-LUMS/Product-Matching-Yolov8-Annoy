@@ -41,6 +41,7 @@ import android.view.Surface;
 import android.os.Handler;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements SurfaceHolder.Callback
 {
@@ -70,6 +71,9 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private EditText rtspLinkInput;
     private Button strtStrmB;
     private ImageView processedFrameView;
+    private TextView originalStreamLabel;
+
+    private TextView detectionStreamLabel;
 
     
 
@@ -97,6 +101,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         strtStrmB.setVisibility(View.GONE);
         processedFrameView = findViewById(R.id.processed_frame);
         processedFrameView.setVisibility(View.GONE);
+        originalStreamLabel = findViewById(R.id.originalStreamLabel);
+        detectionStreamLabel = findViewById(R.id.detectionStreamLabel);
 
         textureView = (TextureView) findViewById(R.id.textureView);
 //        textureView.setVisibility(View.INVISIBLE);
@@ -139,7 +145,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                         canvas.drawBitmap(currentFrame, 0, 0, paint);
 
                         // Now you can use the compatibleFrame for detection
-                        yolov8ncnn.detectImage(compatibleFrame);
+                        yolov8ncnn.detectStream(compatibleFrame);
 
                         isRtsp = true;
 
@@ -221,6 +227,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         rtspLinkInput.setVisibility(View.VISIBLE);
         strtStrmB.setVisibility(View.VISIBLE);
         processedFrameView.setVisibility(View.VISIBLE);
+        originalStreamLabel.setVisibility(View.VISIBLE);
+        detectionStreamLabel.setVisibility(View.VISIBLE);
     
 
     }
@@ -265,6 +273,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         imageView = (ZoomableImageView) findViewById(R.id.myImageView);
         imageView.setVisibility(View.GONE);
         cameraView.setVisibility(View.VISIBLE);
+        originalStreamLabel.setVisibility(View.GONE);
+        detectionStreamLabel.setVisibility(View.GONE);
 
     }
 
@@ -285,6 +295,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         rtspLinkInput.setVisibility(View.GONE);
         strtStrmB.setVisibility(View.GONE);
         processedFrameView.setVisibility(View.GONE);
+        originalStreamLabel.setVisibility(View.GONE);
+        detectionStreamLabel.setVisibility(View.GONE);
     }
 
     @Override

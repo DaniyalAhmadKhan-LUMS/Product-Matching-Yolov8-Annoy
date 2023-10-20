@@ -315,5 +315,55 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_detectImage(JN
     // For simplicity, we're just returning JNI_TRUE for now. You may need to handle the return type based on your needs.
     return JNI_TRUE;
 }
+JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_detectStream(JNIEnv* env, jobject thiz, jobject bitmap)
+{
+    // Convert Android Bitmap to cv::Mat
+    AndroidBitmapInfo info;
+    AndroidBitmap_getInfo(env, bitmap, &info);
+
+    // if (info.format != ANDROID_BITMAP_FORMAT_RGB_565)
+    //     return JNI_FALSE;
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
+        return JNI_FALSE;
+    void* pixels = 0;
+    AndroidBitmap_lockPixels(env, bitmap, &pixels);
+    if (pixels == NULL) {
+        // Handle error here
+        return JNI_FALSE;
+    }
+    cv::Mat img(info.height, info.width, CV_8UC4, pixels);
+
+    cv::Mat img_bgr;
+    cv::cvtColor(img, img_bgr, cv::COLOR_RGBA2BGR);
+//    std::string savePath = "/storage/self/primary/DCIM/Camera";
+//    cv::imwrite(savePath, img_bgr);
+
+
+
+    // Lock the mutex and detect
+    {
+        ncnn::MutexLockGuard g(lock);
+        if (g_yolo)
+        {
+            std::vector<Object> objects;
+            g_yolo->detect(img_bgr, objects);
+            g_yolo->draw(img_bgr, objects);
+        }
+        else
+        {
+            draw_unsupported(img_bgr);
+        }
+    }
+    cv::cvtColor(img_bgr, img, cv::COLOR_BGR2RGBA);
+    AndroidBitmap_unlockPixels(env, bitmap);
+
+    // Optionally: Convert the cv::Mat back to Bitmap if you've made modifications and want to reflect them in Java.
+
+    // For simplicity, we're just returning JNI_TRUE for now. You may need to handle the return type based on your needs.
+    return JNI_TRUE;
+}
 
 }
+
+
+

@@ -11,3 +11,14 @@
 1508	2031	1697744117663156235	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/build/intermediates/cxx/Debug/535x4r3k/obj/arm64-v8a/libyolov8ncnn.so	3929ec1266725778
 1	1186	1697744155030547372	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	33d5f04a0aac74b9
 1186	1374	1697744155210544537	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/build/intermediates/cxx/Debug/535x4r3k/obj/arm64-v8a/libyolov8ncnn.so	3929ec1266725778
+0	5	0	clean	b9c7c8390ded0b8e
+11	616	1697818866255148797	CMakeFiles/yolov8ncnn.dir/munkres.cpp.o	b4c424c9a7cf836c
+5	781	1697818866414192297	CMakeFiles/yolov8ncnn.dir/ndkcamera.cpp.o	f3aece42014c2814
+12	1343	1697818866972784102	CMakeFiles/yolov8ncnn.dir/track.cpp.o	52839c1fe09a5d30
+6	1814	1697818867436089227	CMakeFiles/yolov8ncnn.dir/tracker.cpp.o	41d1d864927c173a
+5	1841	1697818867467244996	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	33d5f04a0aac74b9
+5	2678	1697818868286056230	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	361147e7c9c176de
+6	4808	1697818870393703750	CMakeFiles/yolov8ncnn.dir/kalman_filter.cpp.o	f8e4c31b10be29ac
+4808	5110	1697818870727750689	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/build/intermediates/cxx/Debug/535x4r3k/obj/arm64-v8a/libyolov8ncnn.so	3929ec1266725778
+2	1144	1697820267216337271	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	33d5f04a0aac74b9
+1144	1315	1697820267380393357	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/build/intermediates/cxx/Debug/535x4r3k/obj/arm64-v8a/libyolov8ncnn.so	3929ec1266725778
