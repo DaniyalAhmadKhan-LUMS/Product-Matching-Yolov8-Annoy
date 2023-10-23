@@ -115,6 +115,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                 mediaPlayer.getVLCVout().attachViews();
                 mediaPlayer.setAspectRatio("16:9");
                 mediaPlayer.setScale(0);
+//                mediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_FILL);
                 // mediaPlayer.play();
             }
 
@@ -196,6 +197,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         final List<String> options = Arrays.asList("-vvv");
         libVLC = new LibVLC(this, options);
         mediaPlayer = new MediaPlayer(libVLC);
+//        mediaPlayer.setScale(0);
         mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
             @Override
             public void onEvent(MediaPlayer.Event event) {

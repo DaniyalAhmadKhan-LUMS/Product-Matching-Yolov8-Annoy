@@ -335,12 +335,6 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_detectStream(J
 
     cv::Mat img_bgr;
     cv::cvtColor(img, img_bgr, cv::COLOR_RGBA2BGR);
-//    std::string savePath = "/storage/self/primary/DCIM/Camera";
-//    cv::imwrite(savePath, img_bgr);
-
-
-
-    // Lock the mutex and detect
     {
         ncnn::MutexLockGuard g(lock);
         if (g_yolo)
@@ -357,9 +351,6 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_detectStream(J
     cv::cvtColor(img_bgr, img, cv::COLOR_BGR2RGBA);
     AndroidBitmap_unlockPixels(env, bitmap);
 
-    // Optionally: Convert the cv::Mat back to Bitmap if you've made modifications and want to reflect them in Java.
-
-    // For simplicity, we're just returning JNI_TRUE for now. You may need to handle the return type based on your needs.
     return JNI_TRUE;
 }
 
