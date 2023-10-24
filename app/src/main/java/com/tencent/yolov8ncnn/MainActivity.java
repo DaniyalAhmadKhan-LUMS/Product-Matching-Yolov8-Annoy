@@ -70,6 +70,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private boolean isStreaming = false;
     private EditText rtspLinkInput;
     private Button strtStrmB;
+    private Button stopStrmB;
     private ImageView processedFrameView;
     private TextView originalStreamLabel;
 
@@ -78,16 +79,14 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     
 
 
-    /** Called when the activity is first created. */
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         binding = MainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        // final List<String> options = Arrays.asList("-vvv");
-        // libVLC = new LibVLC(this,options);
-        // setContentView(R.layout.main);
+
         
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -97,77 +96,19 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         cameraView.getHolder().addCallback(this);
         rtspLinkInput =(EditText) findViewById(R.id.rtspUrl);
         strtStrmB = (Button) findViewById(R.id.startStream);
+
+        stopStrmB = (Button) findViewById(R.id.stopStream);
         rtspLinkInput.setVisibility(View.GONE);
         strtStrmB.setVisibility(View.GONE);
+        stopStrmB.setVisibility(View.GONE);
         processedFrameView = findViewById(R.id.processed_frame);
         processedFrameView.setVisibility(View.GONE);
         originalStreamLabel = findViewById(R.id.originalStreamLabel);
         detectionStreamLabel = findViewById(R.id.detectionStreamLabel);
 
         textureView = (TextureView) findViewById(R.id.textureView);
+
 //        textureView.setVisibility(View.INVISIBLE);
-        textureView.setSurfaceTextureListener(new SurfaceTextureListener() {
-            @Override
-            public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                // Setup your media player with this surface for video output
-                textureSurface = new Surface(surface);
-                mediaPlayer.getVLCVout().setVideoSurface(textureSurface, null);
-                mediaPlayer.getVLCVout().attachViews();
-                mediaPlayer.setAspectRatio("16:9");
-                mediaPlayer.setScale(0);
-//                mediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_FILL);
-                // mediaPlayer.play();
-            }
-
-            @Override
-            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-                mediaPlayer.stop();
-                mediaPlayer.getVLCVout().detachViews();
-                return true;
-            }
-
-            @Override
-            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-                mediaPlayer.getVLCVout().setWindowSize(width, height);
-            }
-
-            @Override
-            public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-                if (isStreaming) {
-                    // New frame available, capture it
-                    Bitmap currentFrame = textureView.getBitmap();
-                    if (currentFrame != null) {
-                        // Ensure the bitmap is in the correct format (RGBA_8888)
-                        Bitmap compatibleFrame = Bitmap.createBitmap(currentFrame.getWidth(), currentFrame.getHeight(), Bitmap.Config.ARGB_8888);
-
-                        // Copy the original bitmap's pixels to the new bitmap
-                        Canvas canvas = new Canvas(compatibleFrame);
-                        Paint paint = new Paint();
-                        canvas.drawBitmap(currentFrame, 0, 0, paint);
-
-                        // Now you can use the compatibleFrame for detection
-                        yolov8ncnn.detectStream(compatibleFrame);
-
-                        isRtsp = true;
-
-                        // Clean up the bitmaps when done
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                processedFrameView.setImageBitmap(compatibleFrame);
-                            }
-                        });
-                        currentFrame.recycle();
-//                        compatibleFrame.recycle();
-                    }
-
-                    // Do something with the frame, e.g., process or save it
-                    // Keep in mind that this operation is expensive, and doing it for every frame
-                    // will significantly consume memory and CPU.
-                    // Consider adding a condition to limit the capture rate or resolution.
-                }
-            }
-        });
 
 
 
@@ -225,9 +166,10 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
             yolov8ncnn.closeCamera();
             cameraView.setVisibility(View.GONE);
         }
-        stopRtspStream();
+//        stopRtspStream();
         rtspLinkInput.setVisibility(View.VISIBLE);
         strtStrmB.setVisibility(View.VISIBLE);
+        stopStrmB.setVisibility(View.VISIBLE);
         processedFrameView.setVisibility(View.VISIBLE);
         originalStreamLabel.setVisibility(View.VISIBLE);
         detectionStreamLabel.setVisibility(View.VISIBLE);
@@ -235,19 +177,25 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
     }
     public void onStartStreamClicked(View view) {
-        // ... existing setup before playing the stream ...
+
         String rtspUrl = rtspLinkInput.getText().toString().trim();
         if (!rtspUrl.isEmpty()) {
-            // If the URL is not empty, hide the camera and ImageView, then start the stream
 
-            startStream(rtspUrl); // This method should start streaming from the provided URL.
+
+            startStream(rtspUrl); 
         } else {
-            // Handle the case where the RTSP URL is empty (e.g., show a Toast message).
+
             Toast.makeText(this, "Please enter a valid RTSP link.", Toast.LENGTH_SHORT).show();
         }
 
     }
     public void startStream(String rtspUrl) {
+        if (mediaPlayer == null) {
+            initializePlayer();  // Re-initialize if it was released before
+        }
+//        if (textureSurface == null && textureView.isAvailable()) {
+//            setupMediaPlayerSurface(); // Ensure surface is set up again
+//        }
         playStream(rtspUrl);  // replace with your RTSP link
         isRtsp = true;
 
@@ -256,13 +204,45 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         final Media media = new Media(libVLC, Uri.parse(url));
         mediaPlayer.setMedia(media);
         media.release();
+        if (textureView.isAvailable()) {
+            setupMediaPlayerSurface();
+        }
+
         mediaPlayer.play();
     }
+
+    private void setupMediaPlayerSurface() {
+        if (textureSurface == null && textureView.isAvailable()) {
+            // Create a surface for the media player if it's null or old one was destroyed
+            textureSurface = new Surface(textureView.getSurfaceTexture());
+
+        }
+        textureView.setSurfaceTextureListener(surfaceTextureListener);
+        mediaPlayer.getVLCVout().setVideoSurface(textureSurface, null);
+        mediaPlayer.getVLCVout().attachViews();
+    }
+
     private void stopRtspStream() {
         if (mediaPlayer != null) {
-            mediaPlayer.stop();  // Stop the RTSP stream
+            mediaPlayer.stop();
+            mediaPlayer.getVLCVout().detachViews();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
+        rtspLinkInput.setText("");
+        if (textureView != null) {
+            textureView.setSurfaceTextureListener(null);
+
+        }
+        processedFrameView.setImageBitmap(null);
         isRtsp = false;
+        isStreaming = false;
+
+        Toast.makeText(this, "Stream stopped and cleared.", Toast.LENGTH_SHORT).show();
+
+    }
+    public void onStopStreamClicked(View view){
+        stopRtspStream();
     }
     public void resumeCamera(View view) {
         // Restart the camera
@@ -270,6 +250,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         yolov8ncnn.openCamera(1);
         rtspLinkInput.setVisibility(View.GONE);
         strtStrmB.setVisibility(View.GONE);
+        stopStrmB.setVisibility(View.GONE);
         processedFrameView.setVisibility(View.GONE);
         // Toggle view visibility
         imageView = (ZoomableImageView) findViewById(R.id.myImageView);
@@ -296,6 +277,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         cameraView.setVisibility(View.GONE); // hide camera view
         rtspLinkInput.setVisibility(View.GONE);
         strtStrmB.setVisibility(View.GONE);
+        stopStrmB.setVisibility(View.GONE);
         processedFrameView.setVisibility(View.GONE);
         originalStreamLabel.setVisibility(View.GONE);
         detectionStreamLabel.setVisibility(View.GONE);
@@ -333,6 +315,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
             }
         }
     }
+
+
 
 
 
@@ -401,5 +385,69 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
             libVLC.release();
         }
     }
+    private final TextureView.SurfaceTextureListener surfaceTextureListener = new TextureView.SurfaceTextureListener() {
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
 
+//            setupMediaPlayerSurface();
+            if (isRtsp) {
+//                textureSurface = new Surface(surface);
+                // mediaPlayer.getVLCVout().setVideoSurface(textureSurface, null);
+                // mediaPlayer.getVLCVout().attachViews();
+                mediaPlayer.setAspectRatio("16:9");
+                mediaPlayer.setScale(0);
+            }
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+            mediaPlayer.getVLCVout().setWindowSize(width, height);
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.getVLCVout().detachViews();
+            }
+            textureSurface = null;  
+            return true;  
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+            if (isStreaming) {
+                // New frame available, capture it
+                Bitmap currentFrame = textureView.getBitmap();
+                if (currentFrame != null) {
+                    // Ensure the bitmap is in the correct format (RGBA_8888)
+                    Bitmap compatibleFrame = Bitmap.createBitmap(currentFrame.getWidth(), currentFrame.getHeight(), Bitmap.Config.ARGB_8888);
+
+                    // Copy the original bitmap's pixels to the new bitmap
+                    Canvas canvas = new Canvas(compatibleFrame);
+                    Paint paint = new Paint();
+                    canvas.drawBitmap(currentFrame, 0, 0, paint);
+
+                    // Now you can use the compatibleFrame for detection
+                    yolov8ncnn.detectStream(compatibleFrame);
+
+                    isRtsp = true;
+
+                    // Clean up the bitmaps when done
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            processedFrameView.setImageBitmap(compatibleFrame);
+//                            processedFrameView.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    currentFrame.recycle();
+//                        compatibleFrame.recycle();
+                }
+
+
+            }
+        }
+    };
 }

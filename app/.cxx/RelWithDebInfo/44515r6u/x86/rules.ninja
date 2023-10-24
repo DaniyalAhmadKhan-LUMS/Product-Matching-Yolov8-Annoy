@@ -42,7 +42,7 @@ rule CXX_SHARED_LIBRARY_LINKER__yolov8ncnn
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /usr/local/cmake-3.10.2-Linux-x86_64/bin/cmake -H/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/src/main/jni -B/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/product-rtsp/app-rtsp/app/.cxx/RelWithDebInfo/44515r6u/x86
+  command = /usr/local/cmake-3.10.2-Linux-x86_64/bin/cmake -H/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/src/main/jni -B/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/44515r6u/x86
   description = Re-running CMake...
   generator = 1
 

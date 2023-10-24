@@ -75,11 +75,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-<!--    <org.videolan.libvlc.media.VideoView-->
-<!--        android:id="@+id/videoView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content" />-->
-
         <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -132,13 +127,28 @@
                 android:hint="Enter RTSP stream URL"
                 android:inputType="textUri" />
 
-            <Button
-                android:id="@+id/startStream"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:onClick="onStartStreamClicked"
-                android:text="Start Stream" />
+                android:orientation="horizontal"
+                android:gravity="center"> <!-- This line is to center the buttons -->
+
+                <Button
+                    android:id="@+id/startStream"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onStartStreamClicked"
+                    android:text="Start Stream" 
+                    android:layout_marginEnd="10dp"/> <!-- This line is to give some space between the buttons -->
+
+                <Button
+                    android:id="@+id/stopStream"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onStopStreamClicked"
+                    android:text="Stop Stream" />
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
