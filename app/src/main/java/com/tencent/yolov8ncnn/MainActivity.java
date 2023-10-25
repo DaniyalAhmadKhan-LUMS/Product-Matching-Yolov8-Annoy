@@ -42,6 +42,8 @@ import android.os.Handler;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.view.Gravity;
 
 public class MainActivity extends Activity implements SurfaceHolder.Callback
 {
@@ -76,6 +78,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
     private TextView detectionStreamLabel;
 
+
     
 
 
@@ -107,6 +110,13 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         detectionStreamLabel = findViewById(R.id.detectionStreamLabel);
 
         textureView = (TextureView) findViewById(R.id.textureView);
+//         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+//                 LinearLayout.LayoutParams.WRAP_CONTENT, // or MATCH_PARENT
+//                 LinearLayout.LayoutParams.WRAP_CONTENT
+//         );
+//         layoutParams.gravity = Gravity.CENTER; // Don't forget to set gravity if you need it
+// //        textureView.setLayoutParams(layoutParams);
+//         textureView.setLayoutParams(layoutParams);
 
 //        textureView.setVisibility(View.INVISIBLE);
 
@@ -202,6 +212,15 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     }
     private void playStream(String url) {
         final Media media = new Media(libVLC, Uri.parse(url));
+        media.parse(Media.Parse.FetchNetwork);
+        media.setEventListener(new Media.EventListener() {
+            @Override
+            public void onEvent(Media.Event event) {
+                if (event.type == Media.Event.ParsedChanged) {
+                    updateAspectRatio(media);  // see the method below
+                }
+            }
+        });
         mediaPlayer.setMedia(media);
         media.release();
         if (textureView.isAvailable()) {
@@ -209,6 +228,24 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         }
 
         mediaPlayer.play();
+    }
+
+    private void updateAspectRatio(Media media) {
+        // Get the tracks information.
+        for (Media.Track track : media.getTracks()) {
+            if (track.type == Media.Track.Type.Video) {
+                // We've found the video track. Now, let's get its dimensions.
+                Media.VideoTrack videoTrack = (Media.VideoTrack) track;
+                int videoWidth = videoTrack.width;
+                int videoHeight = videoTrack.height;
+
+                // Update the aspect ratio and scale for the mediaPlayer.
+                String aspectRatio = videoWidth + ":" + videoHeight;
+                mediaPlayer.setAspectRatio(aspectRatio);
+                mediaPlayer.setScale(0);  // You can adjust scaling based on your requirement.
+                break;
+            }
+        }
     }
 
     private void setupMediaPlayerSurface() {
@@ -390,13 +427,13 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
 
 //            setupMediaPlayerSurface();
-            if (isRtsp) {
-//                textureSurface = new Surface(surface);
-                // mediaPlayer.getVLCVout().setVideoSurface(textureSurface, null);
-                // mediaPlayer.getVLCVout().attachViews();
-                mediaPlayer.setAspectRatio("16:9");
-                mediaPlayer.setScale(0);
-            }
+//            if (isRtsp) {
+////                textureSurface = new Surface(surface);
+//                // mediaPlayer.getVLCVout().setVideoSurface(textureSurface, null);
+//                // mediaPlayer.getVLCVout().attachViews();
+//                mediaPlayer.setAspectRatio("16:9");
+//                mediaPlayer.setScale(0);
+//            }
         }
 
         @Override
