@@ -75,15 +75,14 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-        <ScrollView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -91,15 +90,15 @@
                 android:id="@+id/originalStreamLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="Original Stream:"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <TextureView
                 android:id="@+id/textureView"
-                android:layout_width="match_parent"
+                android:layout_width="300dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center" />
@@ -108,18 +107,18 @@
                 android:id="@+id/detectionStreamLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
                 android:text="Detection Stream:"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/processed_frame"
-                android:layout_width="match_parent"
+                android:layout_width="300dp"
                 android:layout_height="200dp"
-                android:scaleType="fitCenter"/>
+                android:scaleType="fitCenter" />
 
             <EditText
                 android:id="@+id/rtspUrl"
@@ -131,16 +130,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"> <!-- This line is to center the buttons -->
+                android:gravity="center"
+                android:orientation="horizontal"> <!-- This line is to center the buttons -->
 
                 <Button
                     android:id="@+id/startStream"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
                     android:onClick="onStartStreamClicked"
-                    android:text="Start Stream" 
-                    android:layout_marginEnd="10dp"/> <!-- This line is to give some space between the buttons -->
+                    android:text="Start Stream" /> <!-- This line is to give some space between the buttons -->
 
                 <Button
                     android:id="@+id/stopStream"

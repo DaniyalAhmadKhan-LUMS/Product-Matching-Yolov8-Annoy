@@ -145,7 +145,25 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         reload();
     }
     private void initializePlayer() {
-        final List<String> options = Arrays.asList("-vvv");
+        ArrayList<String> options = new ArrayList<>();
+        options.add("--no-audio-time-stretch");
+//        options.add("--vout=android-display");
+        options.add("-vvv");
+        options.add("--no-sub-autodetect-file");
+        options.add("--swscale-mode=0");
+        options.add("--network-caching=10000");
+        options.add("--avcodec-hw=any");
+        options.add("--rtsp-tcp");
+        options.add("--http-continuous");
+        options.add("--repeat");
+        options.add("--loop");
+        options.add("-R");
+        options.add("--http-reconnect");
+
+
+
+        
+
         libVLC = new LibVLC(this, options);
         mediaPlayer = new MediaPlayer(libVLC);
 //        mediaPlayer.setScale(0);
@@ -200,19 +218,29 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
     }
     public void startStream(String rtspUrl) {
+        if(mediaPlayer.getVLCVout().areViewsAttached())
+        {
+            mediaPlayer.getVLCVout().detachViews();
+        }
         if (mediaPlayer == null) {
             initializePlayer();  // Re-initialize if it was released before
+
         }
+        // else{
+        //     Toast.makeText(this, "RSTP already streaming.", Toast.LENGTH_SHORT).show();
+        // }
+        playStream(rtspUrl);  // replace with your RTSP link
+        isRtsp = true;
 //        if (textureSurface == null && textureView.isAvailable()) {
 //            setupMediaPlayerSurface(); // Ensure surface is set up again
 //        }
-        playStream(rtspUrl);  // replace with your RTSP link
-        isRtsp = true;
+
 
     }
     private void playStream(String url) {
         final Media media = new Media(libVLC, Uri.parse(url));
         media.parse(Media.Parse.FetchNetwork);
+
         media.setEventListener(new Media.EventListener() {
             @Override
             public void onEvent(Media.Event event) {
@@ -226,7 +254,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         if (textureView.isAvailable()) {
             setupMediaPlayerSurface();
         }
-
+//        mediaPlayer.setVideoScale(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
         mediaPlayer.play();
     }
 
@@ -241,7 +269,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
                 // Update the aspect ratio and scale for the mediaPlayer.
                 String aspectRatio = videoWidth + ":" + videoHeight;
-                mediaPlayer.setAspectRatio(aspectRatio);
+                mediaPlayer.setAspectRatio(null);
                 mediaPlayer.setScale(0);  // You can adjust scaling based on your requirement.
                 break;
             }
@@ -256,6 +284,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         }
         textureView.setSurfaceTextureListener(surfaceTextureListener);
         mediaPlayer.getVLCVout().setVideoSurface(textureSurface, null);
+        mediaPlayer.getVLCVout().setWindowSize(textureView.getWidth(), textureView.getHeight());
         mediaPlayer.getVLCVout().attachViews();
     }
 
@@ -454,7 +483,13 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-            if (isStreaming) {
+                if (isStreaming) {
+//                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.WRAP_CONTENT, // or MATCH_PARENT
+//                    LinearLayout.LayoutParams.WRAP_CONTENT
+//                    );
+//                layoutParams.gravity = Gravity.CENTER; // Don't forget to set gravity if you need it
+//                textureView.setLayoutParams(layoutParams);
                 // New frame available, capture it
                 Bitmap currentFrame = textureView.getBitmap();
                 if (currentFrame != null) {
