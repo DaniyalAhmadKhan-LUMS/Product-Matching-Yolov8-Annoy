@@ -1,19 +1,14 @@
-plugins {
-    id 'com.android.application'
-}
+apply plugin: 'com.android.application'
 
 android {
-    namespace 'com.tencent.yolov8ncnn'
-    compileSdk 33
+    compileSdkVersion 31
+    buildToolsVersion "29.0.2"
 
     defaultConfig {
         applicationId "com.tencent.yolov8ncnn"
+        archivesBaseName = "$applicationId"
 
-        minSdk 24
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
-
+        minSdkVersion 31
     }
 
     externalNativeBuild {
@@ -22,17 +17,13 @@ android {
             path file('src/main/jni/CMakeLists.txt')
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
     buildFeatures {
         viewBinding true
     }
 
     dependencies {
-        implementation 'androidx.appcompat:appcompat:1.6.1'
-        implementation 'com.google.android.material:material:1.8.0'
+        implementation 'androidx.appcompat:appcompat:1.4.1'
+        implementation 'com.google.android.material:material:1.6.0'
         implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
         implementation 'androidx.navigation:navigation-fragment:2.5.3'
         implementation 'androidx.navigation:navigation-ui:2.5.3'

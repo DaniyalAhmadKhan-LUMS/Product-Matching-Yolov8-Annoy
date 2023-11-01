@@ -16,3 +16,5 @@
 1	2176	1698163544860741078	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	699110541c397c10
 2	5249	1698163547904726809	CMakeFiles/yolov8ncnn.dir/kalman_filter.cpp.o	ab590c533fbf683a
 5249	5515	1698163548200725420	/home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/RelWithDebInfo/44515r6u/obj/x86/libyolov8ncnn.so	6d1e50b084a42ddb
+0	5	0	clean	b9c7c8390ded0b8e
+0	2	0	clean	b9c7c8390ded0b8e

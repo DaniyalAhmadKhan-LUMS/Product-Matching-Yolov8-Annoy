@@ -110,15 +110,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         detectionStreamLabel = findViewById(R.id.detectionStreamLabel);
 
         textureView = (TextureView) findViewById(R.id.textureView);
-//         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-//                 LinearLayout.LayoutParams.WRAP_CONTENT, // or MATCH_PARENT
-//                 LinearLayout.LayoutParams.WRAP_CONTENT
-//         );
-//         layoutParams.gravity = Gravity.CENTER; // Don't forget to set gravity if you need it
-// //        textureView.setLayoutParams(layoutParams);
-//         textureView.setLayoutParams(layoutParams);
-
-//        textureView.setVisibility(View.INVISIBLE);
 
 
 
@@ -139,7 +130,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
             {
             }
         });
-        
+
         
         initializePlayer();
         reload();
@@ -223,17 +214,12 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
             mediaPlayer.getVLCVout().detachViews();
         }
         if (mediaPlayer == null) {
-            initializePlayer();  // Re-initialize if it was released before
+            initializePlayer();
 
         }
-        // else{
-        //     Toast.makeText(this, "RSTP already streaming.", Toast.LENGTH_SHORT).show();
-        // }
-        playStream(rtspUrl);  // replace with your RTSP link
+
+        playStream(rtspUrl);
         isRtsp = true;
-//        if (textureSurface == null && textureView.isAvailable()) {
-//            setupMediaPlayerSurface(); // Ensure surface is set up again
-//        }
 
 
     }
@@ -254,7 +240,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         if (textureView.isAvailable()) {
             setupMediaPlayerSurface();
         }
-//        mediaPlayer.setVideoScale(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
         mediaPlayer.play();
     }
 
@@ -267,7 +252,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                 int videoWidth = videoTrack.width;
                 int videoHeight = videoTrack.height;
 
-                // Update the aspect ratio and scale for the mediaPlayer.
                 String aspectRatio = videoWidth + ":" + videoHeight;
                 mediaPlayer.setAspectRatio(null);
                 mediaPlayer.setScale(0);  // You can adjust scaling based on your requirement.
@@ -328,7 +312,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     }
 
     public void openGallery(View view) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_STORAGE);
         } else {
             onImageSelectButtonClick(view);
@@ -338,9 +322,10 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     public void onImageSelectButtonClick(View view) {
         stopRtspStream();
         yolov8ncnn.closeCamera(); // close camera first
+        cameraView.setVisibility(View.GONE);
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_SELECT_IMAGE);
-        cameraView.setVisibility(View.GONE); // hide camera view
+         // hide camera view
         rtspLinkInput.setVisibility(View.GONE);
         strtStrmB.setVisibility(View.GONE);
         stopStrmB.setVisibility(View.GONE);
@@ -419,6 +404,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         super.onResume();
     
         if (isRtsp) {
+            // fix this!!!
             if (mediaPlayer != null) {
                 mediaPlayer.play();
             }
@@ -455,14 +441,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
 
-//            setupMediaPlayerSurface();
-//            if (isRtsp) {
-////                textureSurface = new Surface(surface);
-//                // mediaPlayer.getVLCVout().setVideoSurface(textureSurface, null);
-//                // mediaPlayer.getVLCVout().attachViews();
-//                mediaPlayer.setAspectRatio("16:9");
-//                mediaPlayer.setScale(0);
-//            }
+
         }
 
         @Override
@@ -484,13 +463,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
                 if (isStreaming) {
-//                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT, // or MATCH_PARENT
-//                    LinearLayout.LayoutParams.WRAP_CONTENT
-//                    );
-//                layoutParams.gravity = Gravity.CENTER; // Don't forget to set gravity if you need it
-//                textureView.setLayoutParams(layoutParams);
-                // New frame available, capture it
+
                 Bitmap currentFrame = textureView.getBitmap();
                 if (currentFrame != null) {
                     // Ensure the bitmap is in the correct format (RGBA_8888)
