@@ -25,7 +25,6 @@
 
 #include <platform.h>
 #include <benchmark.h>
-
 #include "yolo.h"
 
 #include "ndkcamera.h"
@@ -50,7 +49,7 @@ static int draw_unsupported(cv::Mat& rgb)
     int x = (rgb.cols - label_size.width) / 2;
 
     cv::rectangle(rgb, cv::Rect(cv::Point(x, y), cv::Size(label_size.width, label_size.height + baseLine)),
-                    cv::Scalar(255, 255, 255), -1);
+                  cv::Scalar(255, 255, 255), -1);
 
     cv::putText(rgb, text, cv::Point(x, y + label_size.height),
                 cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0));
@@ -104,23 +103,89 @@ static int draw_fps(cv::Mat& rgb)
     int x = rgb.cols - label_size.width;
 
     cv::rectangle(rgb, cv::Rect(cv::Point(x, y), cv::Size(label_size.width, label_size.height + baseLine)),
-                    cv::Scalar(255, 255, 255), -1);
+                  cv::Scalar(255, 255, 255), -1);
 
     cv::putText(rgb, text, cv::Point(x, y + label_size.height),
                 cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
 
     return 0;
 }
+jobject convertVectorToList(JNIEnv* env, const std::vector<Object>& objects) {
+    // Get ArrayList class and method IDs
+    jclass arrayListClass = env->FindClass("java/util/ArrayList");
+    jmethodID arrayListInit = env->GetMethodID(arrayListClass, "<init>", "()V");
+    jmethodID arrayListAdd = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
 
+    // Create an ArrayList
+    jobject arrayList = env->NewObject(arrayListClass, arrayListInit);
+
+    // Get DetectedObject class and its constructor method ID
+    jclass detectedObjectClass = env->FindClass("com/tencent/yolov8ncnn/DetectedObject");
+    jmethodID detectedObjectInit = env->GetMethodID(detectedObjectClass, "<init>", "()V");
+
+    // Get DetectedObject class field IDs
+    jfieldID xFieldID = env->GetFieldID(detectedObjectClass, "x", "F");
+    jfieldID yFieldID = env->GetFieldID(detectedObjectClass, "y", "F");
+    jfieldID widthFieldID = env->GetFieldID(detectedObjectClass, "width", "F");
+    jfieldID heightFieldID = env->GetFieldID(detectedObjectClass, "height", "F");
+    jfieldID labelFieldID = env->GetFieldID(detectedObjectClass, "label", "I");
+    jfieldID probFieldID = env->GetFieldID(detectedObjectClass, "prob", "F");
+    jfieldID labelNameFieldID = env->GetFieldID(detectedObjectClass, "labelName", "Ljava/lang/String;");
+    jfieldID bboxAreaFieldID = env->GetFieldID(detectedObjectClass, "bboxArea", "F");
+
+    for (const Object& obj : objects) {
+        // Create a new DetectedObject instance
+        jobject jobj = env->NewObject(detectedObjectClass, detectedObjectInit);
+
+        // Set the fields for the DetectedObject
+        env->SetFloatField(jobj, xFieldID, obj.rect.x);
+        env->SetFloatField(jobj, yFieldID, obj.rect.y);
+        env->SetFloatField(jobj, widthFieldID, obj.rect.width);
+        env->SetFloatField(jobj, heightFieldID, obj.rect.height);
+        env->SetIntField(jobj, labelFieldID, obj.label);
+        env->SetFloatField(jobj, probFieldID, obj.prob);
+
+        // Set the label name field
+        jstring labelNameStr = env->NewStringUTF(obj.labelStr.c_str());
+        env->SetObjectField(jobj, labelNameFieldID, labelNameStr);
+
+        // Calculate and set the bounding box area field
+        float bboxArea = obj.rect.width * obj.rect.height;
+        env->SetFloatField(jobj, bboxAreaFieldID, bboxArea);
+
+        // Add the DetectedObject to the ArrayList
+        env->CallBooleanMethod(arrayList, arrayListAdd, jobj);
+
+        // Clean up the local reference to the label name string
+        env->DeleteLocalRef(labelNameStr);
+
+        // Delete the local reference to the DetectedObject
+        env->DeleteLocalRef(jobj);
+    }
+
+    return arrayList;
+}
 static Yolo* g_yolo = 0;
 static ncnn::Mutex lock;
+static jobject g_callback = 0;
 
 class MyNdkCamera : public NdkCameraWindow
 {
 public:
     virtual void on_image_render(cv::Mat& rgb) const;
-};
+    void update_detected_objects(const std::vector<Object>& objects) const;
+    const std::vector<Object>& get_last_detected_objects() const;
+private:
+    mutable std::vector<Object> last_detected_objects;
 
+
+};
+void MyNdkCamera::update_detected_objects(const std::vector<Object> &objects) const {
+    last_detected_objects = objects;
+}
+const std::vector<Object>& MyNdkCamera::get_last_detected_objects() const {
+    return last_detected_objects;
+}
 void MyNdkCamera::on_image_render(cv::Mat& rgb) const
 {
     // nanodet
@@ -131,8 +196,8 @@ void MyNdkCamera::on_image_render(cv::Mat& rgb) const
         {
             std::vector<Object> objects;
             g_yolo->detect(rgb, objects);
-
             g_yolo->draw(rgb, objects);
+            update_detected_objects(objects);
         }
         else
         {
@@ -147,12 +212,14 @@ static MyNdkCamera* g_camera = 0;
 
 extern "C" {
 
+
+
+
 JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* reserved)
 {
     __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "JNI_OnLoad");
-
     g_camera = new MyNdkCamera;
-
+//    g_camera->get_last_detected_objects();
     return JNI_VERSION_1_4;
 }
 
@@ -171,6 +238,10 @@ JNIEXPORT void JNI_OnUnload(JavaVM* vm, void* reserved)
     g_camera = 0;
 }
 
+JNIEXPORT void JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_setDetectionCallback(JNIEnv* env, jobject thiz, jobject callback) {
+    g_callback = env->NewGlobalRef(callback);
+}
+
 // public native boolean loadModel(AssetManager mgr, int modelid, int cpugpu);
 JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv* env, jobject thiz, jobject assetManager, jint modelid, jint cpugpu)
 {
@@ -184,28 +255,28 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIE
     __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "loadModel %p", mgr);
 
     const char* modeltypes[] =
-    {
-        "n",
-        "s",
-    };
+            {
+                    "n",
+                    "s",
+            };
 
     const int target_sizes[] =
-    {
-        320,
-        320,
-    };
+            {
+                    320,
+                    320,
+            };
 
     const float mean_vals[][3] =
-    {
-        {103.53f, 116.28f, 123.675f},
-        {103.53f, 116.28f, 123.675f},
-    };
+            {
+                    {103.53f, 116.28f, 123.675f},
+                    {103.53f, 116.28f, 123.675f},
+            };
 
     const float norm_vals[][3] =
-    {
-        { 1 / 255.f, 1 / 255.f, 1 / 255.f },
-        { 1 / 255.f, 1 / 255.f, 1 / 255.f },
-    };
+            {
+                    { 1 / 255.f, 1 / 255.f, 1 / 255.f },
+                    { 1 / 255.f, 1 / 255.f, 1 / 255.f },
+            };
 
     const char* modeltype = modeltypes[(int)modelid];
     int target_size = target_sizes[(int)modelid];
@@ -353,8 +424,17 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_detectStream(J
 
     return JNI_TRUE;
 }
+JNIEXPORT jobject JNICALL Java_com_tencent_yolov8ncnn_Yolov8Ncnn_getCameraYOLOout(JNIEnv* env, jobject thiz)
+{
+    const std::vector<Object>& objects = g_camera->get_last_detected_objects();
 
+    // Use the convertVectorToList function to convert the vector of objects to a Java ArrayList
+    jobject arrayListOfDetectedObjects = convertVectorToList(env, objects);
+    return arrayListOfDetectedObjects;
 }
+}
+
+
 
 
 

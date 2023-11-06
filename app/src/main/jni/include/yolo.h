@@ -32,6 +32,11 @@ struct Object
     cv::Rect_<float> rect;
     int label;
     float prob;
+    std::string labelStr;
+    float bbHeight;
+    float bbWidth;
+    float bbArea;
+
 };
 struct GridAndStride
 {
@@ -89,25 +94,25 @@ public:
         // To get the last substring (or only, if delimiter is not found)
         return {featureVectorsTemp, labelsTemp};
     }
-std::vector<float> convert_to_vector(const ncnn::Mat& mat) {
-    std::vector<float> vec;
-    int channels = mat.c;
-    int width = mat.w;
-    int height = mat.h;
+    std::vector<float> convert_to_vector(const ncnn::Mat& mat) {
+        std::vector<float> vec;
+        int channels = mat.c;
+        int width = mat.w;
+        int height = mat.h;
 
-    vec.reserve(channels * width * height);
+        vec.reserve(channels * width * height);
 
-    for (int c = 0; c < channels; ++c) {
-        for (int h = 0; h < height; ++h) {
-            for (int w = 0; w < width; ++w) {
-                float value = mat.channel(c).row(h)[w];
-                vec.push_back(value);
+        for (int c = 0; c < channels; ++c) {
+            for (int h = 0; h < height; ++h) {
+                for (int w = 0; w < width; ++w) {
+                    float value = mat.channel(c).row(h)[w];
+                    vec.push_back(value);
+                }
             }
         }
-    }
 
-    return vec;
-}
+        return vec;
+    }
 
     int findMostSimilar(const std::vector<float>& V1) {
         Eigen::VectorXf similarities = batchCosineSimilarity(V1);

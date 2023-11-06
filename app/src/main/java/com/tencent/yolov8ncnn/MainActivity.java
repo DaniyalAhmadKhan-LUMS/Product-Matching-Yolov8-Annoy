@@ -44,6 +44,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.view.Gravity;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends Activity implements SurfaceHolder.Callback
 {
@@ -78,8 +87,12 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
     private TextView detectionStreamLabel;
 
+    private List<DetectedObject> objectDect;
+    private volatile boolean cameraActive = false;
+    private Thread cameraThread;
 
-    
+
+
 
 
 
@@ -90,7 +103,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         binding = MainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         cameraView = (SurfaceView) findViewById(R.id.cameraview);
@@ -131,7 +144,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
             }
         });
 
-        
+
         initializePlayer();
         reload();
     }
@@ -153,7 +166,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
 
 
-        
+
 
         libVLC = new LibVLC(this, options);
         mediaPlayer = new MediaPlayer(libVLC);
@@ -182,6 +195,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         if (isGallery) {
             imageView.setVisibility(View.GONE);
         } else {
+            deactivateCameraT();
             yolov8ncnn.closeCamera();
             cameraView.setVisibility(View.GONE);
         }
@@ -192,7 +206,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         processedFrameView.setVisibility(View.VISIBLE);
         originalStreamLabel.setVisibility(View.VISIBLE);
         detectionStreamLabel.setVisibility(View.VISIBLE);
-    
+
 
     }
     public void onStartStreamClicked(View view) {
@@ -201,7 +215,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         if (!rtspUrl.isEmpty()) {
 
 
-            startStream(rtspUrl); 
+            startStream(rtspUrl);
         } else {
 
             Toast.makeText(this, "Please enter a valid RTSP link.", Toast.LENGTH_SHORT).show();
@@ -294,9 +308,125 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     public void onStopStreamClicked(View view){
         stopRtspStream();
     }
+
+    private void startCameraThread() {
+        cameraThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (cameraActive) {
+                    // Fetch the YOLO output
+                    objectDect = yolov8ncnn.getCameraYOLOout();
+                    if (objectDect!=null){
+//                        pushToWebhook(objectDect);
+                    }
+
+                    // Process the YOLO output as needed
+                    // ...
+
+                    // For example, update the UI with the YOLO output on the main thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Update your UI with the YOLO output
+                            // ...
+                        }
+                    });
+
+                    // Sleep a bit to prevent tight looping (optional but recommended)
+                    try {
+                        Thread.sleep(100); // Sleep for 100 milliseconds
+                    } catch (InterruptedException e) {
+                        // Handle the interruption
+                        Thread.currentThread().interrupt(); // Set the interrupt flag again
+                        break; // Break out of the loop if the thread is interrupted
+                    }
+                }
+            }
+        });
+        cameraThread.start();
+    }
+    private void pushToWebhook(List<DetectedObject> detectedObjects) {
+        // You need to replace this with your actual webhook URL
+        String webhookUrl = "https://your.webhook.url";
+        HttpURLConnection connection = null;
+
+        try {
+            URL url = new URL(webhookUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setDoOutput(true);
+
+            // Prepare the payload
+            JSONObject payload = new JSONObject();
+            JSONArray data = new JSONArray();
+
+            for (DetectedObject object : detectedObjects) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("productName", object.labelName);
+                jsonObject.put("confidence", object.prob);
+                jsonObject.put("item_area", object.bboxArea);
+                jsonObject.put("item_width", object.width);
+                jsonObject.put("item_height",object.height);
+                long timestamp = System.currentTimeMillis();
+                jsonObject.put("timestamp",timestamp);
+                // Add other details as needed
+                data.put(jsonObject);
+            }
+
+            payload.put("data", data);
+            payload.put("success", true);
+
+            // Convert JSONObject to JSON string and send as the request body
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = payload.toString().getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            // Read the response from the server
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+                Log.d("WebhookResponse", response.toString());
+            }
+
+        } catch (Exception e) {
+            Log.e("WebhookError", "Error sending to webhook", e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+
+    private void activateCameraT() {
+        cameraActive = true;
+        startCameraThread();
+    }
+
+    // Call this method when you want to stop fetching YOLO output
+    private void deactivateCameraT() {
+        cameraActive = false;
+        if (cameraThread != null) {
+            cameraThread.interrupt();
+            try {
+                cameraThread.join(); // Wait for the thread to finish
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt(); // Restore interrupt flag
+            }
+        }
+    }
+
     public void resumeCamera(View view) {
         // Restart the camera
-        stopRtspStream(); 
+        stopRtspStream();
         yolov8ncnn.openCamera(1);
         rtspLinkInput.setVisibility(View.GONE);
         strtStrmB.setVisibility(View.GONE);
@@ -308,6 +438,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         cameraView.setVisibility(View.VISIBLE);
         originalStreamLabel.setVisibility(View.GONE);
         detectionStreamLabel.setVisibility(View.GONE);
+        activateCameraT();
 
     }
 
@@ -321,11 +452,12 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
     public void onImageSelectButtonClick(View view) {
         stopRtspStream();
+        deactivateCameraT();
         yolov8ncnn.closeCamera(); // close camera first
         cameraView.setVisibility(View.GONE);
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_SELECT_IMAGE);
-         // hide camera view
+        // hide camera view
         rtspLinkInput.setVisibility(View.GONE);
         strtStrmB.setVisibility(View.GONE);
         stopStrmB.setVisibility(View.GONE);
@@ -346,7 +478,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                 yolov8ncnn.detectImage(bitmap);
 
                 imageView = (ZoomableImageView) findViewById(R.id.myImageView);
-                
+
                 imageView.setImageBitmap(bitmap);
 
                 imageView.setVisibility(View.VISIBLE); // show image view
@@ -387,6 +519,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
     {
         yolov8ncnn.setOutputWindow(holder.getSurface());
+//        objectDect = yolov8ncnn.getCameraYOLOout();
     }
 
     @Override
@@ -397,12 +530,13 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     @Override
     public void surfaceDestroyed(SurfaceHolder holder)
     {
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-    
+
         if (isRtsp) {
             // fix this!!!
             if (mediaPlayer != null) {
@@ -412,7 +546,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
             if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, REQUEST_CAMERA);
             }
-    
+            activateCameraT();
             yolov8ncnn.openCamera(1);
         }
     }
@@ -420,10 +554,11 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     @Override
     public void onPause() {
         super.onPause();
-    
+
         if (isRtsp && mediaPlayer != null) {
             mediaPlayer.pause();
         } else {
+            deactivateCameraT();
             yolov8ncnn.closeCamera();
         }
     }
@@ -456,13 +591,13 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                 mediaPlayer.stop();
                 mediaPlayer.getVLCVout().detachViews();
             }
-            textureSurface = null;  
-            return true;  
+            textureSurface = null;
+            return true;
         }
 
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-                if (isStreaming) {
+            if (isStreaming) {
 
                 Bitmap currentFrame = textureView.getBitmap();
                 if (currentFrame != null) {

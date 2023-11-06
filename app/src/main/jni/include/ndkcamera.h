@@ -22,8 +22,9 @@
 #include <camera/NdkCameraManager.h>
 #include <camera/NdkCameraMetadata.h>
 #include <media/NdkImageReader.h>
-
+#include <vector>
 #include <opencv2/core/core.hpp>
+#include "yolo.h"
 
 class NdkCamera
 {
@@ -38,12 +39,17 @@ public:
     virtual void on_image(const cv::Mat& rgb) const;
 
     virtual void on_image(const unsigned char* nv21, int nv21_width, int nv21_height) const;
+    void update_detected_objects(const std::vector<Object>& objects) const;
+
+    // Method to retrieve the last detected objects
+    const std::vector<Object>& get_last_detected_objects() const;
 
 public:
     int camera_facing;
     int camera_orientation;
 
 private:
+    mutable std::vector<Object> last_detected_objects;
     ACameraManager* camera_manager;
     ACameraDevice* camera_device;
     AImageReader* image_reader;
@@ -66,11 +72,16 @@ public:
     virtual void on_image_render(cv::Mat& rgb) const;
 
     virtual void on_image(const unsigned char* nv21, int nv21_width, int nv21_height) const;
+    void update_detected_objects(const std::vector<Object>& objects) const{
+        last_detected_objects = objects;
+    }
+
 
 public:
     mutable int accelerometer_orientation;
 
 private:
+    mutable std::vector<Object> last_detected_objects;
     ASensorManager* sensor_manager;
     mutable ASensorEventQueue* sensor_event_queue;
     const ASensor* accelerometer_sensor;
