@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"> <!-- Make sure this line is added -->
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:title="Settings" />
+        <!-- More items can be added here -->
+        <item
+            android:id="@+id/nav_slider"
+            app:actionLayout="@layout/slider_layout"
+            tools:ignore="MissingTitle"/>
+        <item
+            android:id="@+id/nav_edit_text"
+            app:actionLayout="@layout/sidebar_edittext_layout"
+            tools:ignore="MissingTitle" />
+    </group>
+</menu>

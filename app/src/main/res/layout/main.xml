@@ -1,155 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="16dp"
-        android:text="Product Matching Demo"
-        android:textSize="20sp" />
 
     <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <!-- You can add child views here if needed -->
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="16dp"
+            android:text="Product Matching Demo"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="4">
-
-            <Spinner
-                android:id="@+id/spinnerCPUGPU"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawSelectorOnTop="true"
-                android:entries="@array/cpugpu_array" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="resumeCamera"
-                android:text="Resume Camera" />
-
-            <Button
-                android:id="@+id/btn_rtsp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="startRtspStream"
-                android:text="View RTSP Stream" />
-
-            <Button
-                android:id="@+id/btn_gallery"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="openGallery"
-                android:text="Open Gallery" />
+            android:orientation="horizontal">
+            <!-- You can add child views here if needed -->
         </LinearLayout>
-    </HorizontalScrollView>
 
-    <SurfaceView
-        android:id="@+id/cameraview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <com.tencent.yolov8ncnn.ZoomableImageView
-        android:id="@+id/myImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
-
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/originalStreamLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Original Stream:"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <TextureView
-                android:id="@+id/textureView"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center" />
-
-            <TextView
-                android:id="@+id/detectionStreamLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="Detection Stream:"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/processed_frame"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:scaleType="fitCenter" />
-
-            <EditText
-                android:id="@+id/rtspUrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter RTSP stream URL"
-                android:inputType="textUri" />
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"> <!-- This line is to center the buttons -->
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <Spinner
+                    android:id="@+id/spinnerCPUGPU"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawSelectorOnTop="true"
+                    android:entries="@array/cpugpu_array" />
 
                 <Button
-                    android:id="@+id/startStream"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:onClick="onStartStreamClicked"
-                    android:text="Start Stream" /> <!-- This line is to give some space between the buttons -->
+                    android:layout_weight="1"
+                    android:onClick="resumeCamera"
+                    android:text="Resume Camera" />
 
                 <Button
-                    android:id="@+id/stopStream"
+                    android:id="@+id/btn_rtsp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="startRtspStream"
+                    android:text="View RTSP Stream" />
+
+                <Button
+                    android:id="@+id/btn_gallery"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="openGallery"
+                    android:text="Open Gallery" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <SurfaceView
+            android:id="@+id/cameraview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.tencent.yolov8ncnn.ZoomableImageView
+            android:id="@+id/myImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/originalStreamLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="onStopStreamClicked"
-                    android:text="Stop Stream" />
+                    android:layout_marginBottom="8dp"
+                    android:text="Original Stream:"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextureView
+                    android:id="@+id/textureView"
+                    android:layout_width="300dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center" />
+
+                <TextView
+                    android:id="@+id/detectionStreamLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Detection Stream:"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/processed_frame"
+                    android:layout_width="300dp"
+                    android:layout_height="200dp"
+                    android:scaleType="fitCenter" />
+
+                <EditText
+                    android:id="@+id/rtspUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter RTSP stream URL"
+                    android:inputType="textUri" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"> <!-- This line is to center the buttons -->
+
+                    <Button
+                        android:id="@+id/startStream"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:onClick="onStartStreamClicked"
+                        android:text="Start Stream" /> <!-- This line is to give some space between the buttons -->
+
+                    <Button
+                        android:id="@+id/stopStream"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="onStopStreamClicked"
+                        android:text="Stop Stream" />
+
+                </LinearLayout>
 
             </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/drawer_view" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom">
 
+            <Button
+                android:id="@+id/confirm_settings_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Confirm Settings"/>
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>

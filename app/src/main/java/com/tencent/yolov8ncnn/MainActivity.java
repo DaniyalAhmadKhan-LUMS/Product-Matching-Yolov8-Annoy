@@ -23,11 +23,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+
+import com.google.android.material.navigation.NavigationView;
 import com.tencent.yolov8ncnn.databinding.MainBinding;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import android.widget.Toast;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
@@ -53,8 +58,18 @@ import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import android.view.MenuItem;
+import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
+import android.view.Menu;
+import android.widget.SeekBar;
+import java.util.Locale;
+import android.text.Editable;
+import android.text.TextWatcher;
 
-public class MainActivity extends Activity implements SurfaceHolder.Callback
+public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback, NavigationView.OnNavigationItemSelectedListener
 {
     public static final int REQUEST_CAMERA = 100;
     private static final int REQUEST_SELECT_IMAGE = 1001;
@@ -90,6 +105,14 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private List<DetectedObject> objectDect;
     private volatile boolean cameraActive = false;
     private Thread cameraThread;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
+    private float globalValue;
+    private String globalVariable;
+
+    private boolean hasWebhookPushFailed = false;
+    private String previousWebhookUrl = null;
 
 
 
@@ -106,8 +129,89 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        cameraView = (SurfaceView) findViewById(R.id.cameraview);
+        Button confirmSettingsButton = findViewById(R.id.confirm_settings_button);
+        confirmSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Apply changed settings
+                applySettings();
 
+                // Refresh the app (assuming 'reload()' does this)
+//                reload();
+            }
+        });
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        );
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+        // Set the navigation view navigation item selected listener
+        navigationView.setNavigationItemSelectedListener(this);
+
+        MenuItem menuItem = navigationView.getMenu().findItem(R.id.nav_slider);
+        View actionView = menuItem.getActionView();
+        if (actionView != null) {
+            SeekBar seekBar = actionView.findViewById(R.id.slider);
+            final TextView textView = actionView.findViewById(R.id.slider_value);
+            if (seekBar != null) {
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                        globalValue = progress / 100f; // Since SeekBar only supports integer, we divide by 100 to get a float value.
+                        // You can now use globalValue anywhere in your Activity.
+                        textView.setText(String.format(Locale.getDefault(), "%.2f", progress / 100f));
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        // Handle touch start if needed
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        // Handle touch stop if needed
+                    }
+                });
+            }
+        }
+        MenuItem editItem = navigationView.getMenu().findItem(R.id.nav_edit_text);
+        View editView = editItem.getActionView();
+        EditText editText = editView.findViewById(R.id.sidebar_edit_text);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Nothing needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Assign the text to your global variable
+//                globalVariable = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Maybe do some validation here
+            }
+        });
+
+
+
+        cameraView = (SurfaceView) findViewById(R.id.cameraview);
+        cameraView.setZOrderMediaOverlay(true);
         cameraView.getHolder().setFormat(PixelFormat.RGBA_8888);
         cameraView.getHolder().addCallback(this);
         rtspLinkInput =(EditText) findViewById(R.id.rtspUrl);
@@ -148,6 +252,61 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         initializePlayer();
         reload();
     }
+    private void applySettings() {
+        // Get values from SeekBar and EditText and assign to global variables
+        MenuItem menuItem = navigationView.getMenu().findItem(R.id.nav_slider);
+        View actionViewSlider = menuItem.getActionView();
+        SeekBar seekBar = actionViewSlider.findViewById(R.id.slider);
+        globalValue = seekBar.getProgress() / 100f; // Assuming globalValue is a float
+
+        menuItem = navigationView.getMenu().findItem(R.id.nav_edit_text);
+        View actionViewEditText = menuItem.getActionView();
+        EditText editText = actionViewEditText.findViewById(R.id.sidebar_edit_text);
+        globalVariable = editText.getText().toString(); // Assuming globalVariable is a String
+    }
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        toggle.syncState();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns true,
+        // then it has handled the app icon touch event
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle other action bar items...
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation drawer item clicks here
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.nav_settings:
+                // Handle settings action
+                break;
+            // Handle other menu items if any
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Close drawer if open
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void initializePlayer() {
         ArrayList<String> options = new ArrayList<>();
         options.add("--no-audio-time-stretch");
@@ -317,7 +476,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                     // Fetch the YOLO output
                     objectDect = yolov8ncnn.getCameraYOLOout();
                     if (objectDect!=null){
-//                        pushToWebhook(objectDect);
+                        pushToWebhook(objectDect);
                     }
 
                     // Process the YOLO output as needed
@@ -347,7 +506,17 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     }
     private void pushToWebhook(List<DetectedObject> detectedObjects) {
         // You need to replace this with your actual webhook URL
-        String webhookUrl = "https://your.webhook.url";
+
+        if (globalVariable == null) {
+            Log.e("WebhookError", "The webhook URL (globalVariable) is null.");
+            showToastOnce("Webhook URL has not been set.");
+            return; // Exit the method if globalVariable is null
+        }
+        String webhookUrl = globalVariable;
+        if (previousWebhookUrl == null || !webhookUrl.equals(previousWebhookUrl)) {
+            hasWebhookPushFailed = false; // Reset the flag if the URL has changed.
+            previousWebhookUrl = webhookUrl; // Update the previous URL to the current one.
+        }
         HttpURLConnection connection = null;
 
         try {
@@ -397,13 +566,32 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
         } catch (Exception e) {
             Log.e("WebhookError", "Error sending to webhook", e);
+            if (!hasWebhookPushFailed) {
+                hasWebhookPushFailed = true; // Set the flag so we don't show the toast multiple times.
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Unable to push the data to webhook, the URL might be incorrect", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         } finally {
             if (connection != null) {
                 connection.disconnect();
             }
         }
     }
-
+    private void showToastOnce(String message) {
+        if (!hasWebhookPushFailed) {
+            hasWebhookPushFailed = true;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
 
     private void activateCameraT() {
         cameraActive = true;
