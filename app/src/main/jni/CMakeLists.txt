@@ -2,7 +2,7 @@ project(yolov8ncnn)
 
 cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_SOURCE_DIR /home/daniyal/Documents/Upwork/Jared/Yolo+MobileFaceNet+Annoy/combined/Product-Matching-Yolov8-Annoy/app/src/main/jni)
+set(CMAKE_SOURCE_DIR /home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/src/main/jni)
 
 # Include Eigen
 include_directories(${CMAKE_SOURCE_DIR}/eigen)

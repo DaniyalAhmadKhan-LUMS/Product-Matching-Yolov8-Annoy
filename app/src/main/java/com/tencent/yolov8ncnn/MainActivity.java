@@ -308,43 +308,44 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void initializePlayer() {
-        ArrayList<String> options = new ArrayList<>();
-        options.add("--no-audio-time-stretch");
+        if (libVLC == null) {
+            ArrayList<String> options = new ArrayList<>();
+            options.add("--no-audio-time-stretch");
 //        options.add("--vout=android-display");
-        options.add("-vvv");
-        options.add("--no-sub-autodetect-file");
-        options.add("--swscale-mode=0");
-        options.add("--network-caching=10000");
-        options.add("--avcodec-hw=any");
-        options.add("--rtsp-tcp");
-        options.add("--http-continuous");
-        options.add("--repeat");
-        options.add("--loop");
-        options.add("-R");
-        options.add("--http-reconnect");
+            options.add("-vvv");
+            options.add("--no-sub-autodetect-file");
+            options.add("--swscale-mode=0");
+            options.add("--network-caching=10000");
+            options.add("--avcodec-hw=any");
+            options.add("--rtsp-tcp");
+            options.add("--http-continuous");
+            options.add("--repeat");
+            options.add("--loop");
+            options.add("-R");
+            options.add("--http-reconnect");
 
 
-
-
-
-        libVLC = new LibVLC(this, options);
-        mediaPlayer = new MediaPlayer(libVLC);
+            libVLC = new LibVLC(this, options);
+        }
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer(libVLC);
 //        mediaPlayer.setScale(0);
-        mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
-            @Override
-            public void onEvent(MediaPlayer.Event event) {
-                switch (event.type) {
-                    case MediaPlayer.Event.Playing:
-                        // Triggered when the media player starts playing
-                        isStreaming = true;
-                        break;
-                    case MediaPlayer.Event.EndReached:
-                    case MediaPlayer.Event.EncounteredError:
-                        isStreaming = false;
-                        break;
+            mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
+                @Override
+                public void onEvent(MediaPlayer.Event event) {
+                    switch (event.type) {
+                        case MediaPlayer.Event.Playing:
+                            // Triggered when the media player starts playing
+                            isStreaming = true;
+                            break;
+                        case MediaPlayer.Event.EndReached:
+                        case MediaPlayer.Event.EncounteredError:
+                            isStreaming = false;
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
 
 
     }
@@ -389,6 +390,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (mediaPlayer == null) {
             initializePlayer();
 
+        } else {
+            mediaPlayer.stop();
+            mediaPlayer.getVLCVout().detachViews();
         }
 
         playStream(rtspUrl);
@@ -449,8 +453,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.getVLCVout().detachViews();
-            mediaPlayer.release();
-            mediaPlayer = null;
         }
         rtspLinkInput.setText("");
         if (textureView != null) {
@@ -755,9 +757,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onDestroy();
         if (mediaPlayer != null) {
             mediaPlayer.release();
+            mediaPlayer = null;
         }
         if (libVLC != null) {
             libVLC.release();
+            libVLC = null;
         }
     }
     private final TextureView.SurfaceTextureListener surfaceTextureListener = new TextureView.SurfaceTextureListener() {
