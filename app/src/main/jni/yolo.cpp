@@ -154,7 +154,7 @@ static void generate_grids_and_stride(const int target_w, const int target_h, st
 static void generate_proposals(std::vector<GridAndStride> grid_strides, const ncnn::Mat& pred, float prob_threshold, std::vector<Object>& objects)
 {
     const int num_points = grid_strides.size();
-    const int num_class = 1;
+    const int num_class = 80;
     const int reg_max_1 = 16;
 
     for (int i = 0; i < num_points; i++)
@@ -254,8 +254,8 @@ int Yolo::load(AAssetManager* mgr, const char* modeltype, int _target_size, cons
     char modelpath[256];
 //    sprintf(parampath, "yolov8%s.param", modeltype);
 //    sprintf(modelpath, "yolov8%s.bin", modeltype);
-    sprintf(parampath, "%s", "product.param");
-    sprintf(modelpath, "%s", "product.bin");
+    sprintf(parampath, "%s", "yolov8s-seg.param");
+    sprintf(modelpath, "%s", "yolov8s-seg.bin");
 
     yolo.load_param(mgr, parampath);
     yolo.load_model(mgr, modelpath);
@@ -354,7 +354,10 @@ int Yolo::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_th
     std::vector<Object> proposals;
 
     ncnn::Mat out;
-    ex.extract("output0", out);
+    ex.extract("output", out);
+
+    ncnn::Mat mask_proto;
+    ex.extract("seg", mask_proto);
 
 
     std::vector<int> strides = {8, 16, 32}; // might have stride=64

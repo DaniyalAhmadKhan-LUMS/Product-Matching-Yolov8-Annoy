@@ -1,0 +1,3 @@
+/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/1e6j1m14/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/1e6j1m14/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/1e6j1m14/arm64-v8a/CMakeFiles/yolov8ncnn.dir

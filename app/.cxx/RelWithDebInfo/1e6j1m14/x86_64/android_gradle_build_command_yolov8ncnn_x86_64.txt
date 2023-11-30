@@ -1,0 +1,7 @@
+Executable : /home/athena/Android/Sdk/cmake/3.10.2.4988404/bin/ninja
+arguments : 
+-C
+/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/1e6j1m14/x86_64
+yolov8ncnn
+jvmArgs : 
+

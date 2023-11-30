@@ -1,0 +1,13 @@
+# ninja log v5
+1	862	1700575918	CMakeFiles/yolov8ncnn.dir/munkres.cpp.o	9bab5915e6987823
+1	1628	1700575919	CMakeFiles/yolov8ncnn.dir/ndkcamera.cpp.o	82e5d14e20c67e55
+2	1717	1700575919	CMakeFiles/yolov8ncnn.dir/track.cpp.o	3eebd78f06f78c81
+1	1866	1700575919	CMakeFiles/yolov8ncnn.dir/tracker.cpp.o	c5df388866d8de62
+1	1870	1700575919	CMakeFiles/yolov8ncnn.dir/yolov8ncnn.cpp.o	1b8a36a372ecd999
+1	3326	1700575921	CMakeFiles/yolov8ncnn.dir/yolo.cpp.o	2e57fb66fc1b3eb6
+1	6923	1700575924	CMakeFiles/yolov8ncnn.dir/kalman_filter.cpp.o	f52b31ed49d2c440
+6923	7295	1700575925	/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/RelWithDebInfo/1e6j1m14/obj/x86_64/libyolov8ncnn.so	359ba768d2cbfdc
+0	2	0	clean	6ba512140c3dfa5e
+0	2	0	clean	6ba512140c3dfa5e
+0	2	0	clean	6ba512140c3dfa5e
+0	2	0	clean	6ba512140c3dfa5e

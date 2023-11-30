@@ -1,0 +1,40 @@
+{
+  "stringTable": {},
+  "buildFiles": [
+    "/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/src/main/jni/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/athena/Android/Sdk/cmake/3.10.2.4988404/bin/ninja",
+      "-C",
+      "/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/1e6j1m14/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/athena/Android/Sdk/cmake/3.10.2.4988404/bin/ninja",
+    "-C",
+    "/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/1e6j1m14/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "yolov8ncnn-RelWithDebInfo-x86": {
+      "buildCommandComponents": [
+        "/home/athena/Android/Sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/.cxx/RelWithDebInfo/1e6j1m14/x86",
+        "yolov8ncnn"
+      ],
+      "buildType": "release",
+      "abi": "x86",
+      "artifactName": "yolov8ncnn",
+      "output": "/home/athena/Documents/GitHub/Product-Matching-Yolov8-Annoy/app/build/intermediates/cxx/RelWithDebInfo/1e6j1m14/obj/x86/libyolov8ncnn.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {},
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}
